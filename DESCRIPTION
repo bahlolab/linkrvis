@@ -1,0 +1,14 @@
+Package: linkrvis
+Type: Package
+Title: Visualise Output from Genetic Linkage Analysis Software Tools
+Version: 0.1.0
+Authors@R: person("Peter", "Diakumis", email = "peterdiakumis@gmail.com",
+Description: Generates interactive plots for the visualisation of output
+    from linkage analysis software, such as MERLIN, FEstim and PLINK.
+License: MIT
+LazyData: TRUE
+Depends: 
+    R (>= 3.2.1)
+Imports:
+    dplyr,
+    ggplot2,

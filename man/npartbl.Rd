@@ -11,12 +11,25 @@ npartbl(npartbl)
 file output by MERLIN}
 }
 \value{
-S3 object of class \code{npartbl}
+S3 object of class \code{npartbl}, which is
+a list with:
+\itemize{
+  \item chrom: character vector of length 1
+  \item analysis: character vector of length 1 or 2
+  \item pos_cm: numeric vector with cM positions
+  \item n_markers: character vector of length 1
+  \item lods: list of one or two data frames:
+    \enumerate{
+  \item all: data.frame with two numeric columns: lod and exlod
+  \item pairs: data.frame with two numeric columns: lod and exlod
+    }
+  }
 }
 \description{
 Returns an S3 object of class \code{npartbl}
 }
 \examples{
 npartbl_obj <- npartbl("merlin_10_famA-nonparametric.tbl")
+
 }
 

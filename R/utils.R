@@ -20,8 +20,8 @@ match_vec <- function(x, a = "alpha", b = "beta") {
   stopifnot(is.character(x), is.character(a), is.character(b))
   stopifnot(length(a) == 1, length(b) == 1)
   stopifnot(length(x) %in% c(1, 2))
-  ai <- grep(a, x)
-  bi <- grep(b, x)
+  ai <- grep(a, x, ignore.case = TRUE)
+  bi <- grep(b, x, ignore.case = TRUE)
   if (length(x) == 1) {
     if (length(ai) == 1 && length(bi) == 0) {
       return(a)

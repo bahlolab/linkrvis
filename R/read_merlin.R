@@ -2,9 +2,6 @@
 #'
 #' Read the \code{fam_parametric.tbl} file output by MERLIN.
 #'
-#' MERLIN's \code{--tabulate} option outputs convenient tables summarising
-#' linkage analysis results in two tables:
-#' \code{fam_nonparametric.tbl} and \code{fam_parametric.tbl}.
 #'
 #' @param fname The file name to read.
 #'
@@ -20,19 +17,8 @@ read_merlin_partbl <- function(fname) {
 #'
 #' Read the \code{fam_nonparametric.tbl} file output by MERLIN
 #'
-#' MERLIN's \code{--tabulate} option outputs convenient tables summarising
-#' linkage analysis results in two tables:
-#' \code{fam_nonparametric.tbl} and \code{fam_parametric.tbl}.
-#'
-#' The \code{fam_nonparametric.tbl} file will be useful if MERLIN was run with
-#' at least one of the options \code{--npl}, \code{--pairs} or \code{--exp}.
-#' The first two compute a LOD score using the Kong and Cox linear model, and are
-#' designated in the file as 'all' and 'pairs', respectively;
-#' the third complements the LOD score by computing an ExLOD score using the
-#' Kong and Cox exponential mode.
-#'
 #' The \code{fam_nonparametric.tbl} file contains two rows at the
-#' beginning of each \code{all} and/or \code{pairs} subtable, which
+#' beginning of each 'all' and/or 'pairs' subtable, which
 #' indicate the maximum possible scores for the specific dataset.
 #' These rows are ignored by using the comment.char = "n"
 #' option in \code{\link{read.table}}, which works since only these rows

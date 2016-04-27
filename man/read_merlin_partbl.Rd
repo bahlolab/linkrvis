@@ -15,6 +15,11 @@ A \code{data.frame}.
 \description{
 Read the \code{fam_parametric.tbl} file output by MERLIN.
 }
+\details{
+MERLIN's \code{--tabulate} option outputs convenient tables summarising
+linkage analysis results in two tables:
+\code{fam_nonparametric.tbl} and \code{fam_parametric.tbl}.
+}
 \examples{
 read_merlin_partbl("merlin_13_famA-parametric.tbl")
 }

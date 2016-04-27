@@ -2,10 +2,14 @@
 % Please edit documentation in R/npartbl.R
 \name{print.summary.npartbl}
 \alias{print.summary.npartbl}
+\title{Print Summary of \code{npartbl} Object}
 \usage{
 \method{print}{summary.npartbl}(npartbl)
 }
 \arguments{
 \item{npartbl}{An object of class \code{summary.npartbl}}
+}
+\description{
+Print Summary of \code{npartbl} Object
 }
 

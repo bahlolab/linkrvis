@@ -1,6 +1,18 @@
 #' MERLIN \code{npartbl} Object
 #'
-#' Returns an S3 object of class \code{npartbl}
+#' Returns an S3 object of class \code{npartbl} which is basically
+#' an efficient list containing MERLIN's \code{fam_parametric.tbl} file.
+#'
+#' MERLIN's \code{--tabulate} option outputs convenient tables summarising
+#' linkage analysis results in two files:
+#' \code{fam_nonparametric.tbl} and \code{fam_parametric.tbl}.
+#'
+#' The \code{fam_nonparametric.tbl} file will be useful if MERLIN was run with
+#' at least one of the options \code{--npl}, \code{--pairs} or \code{--exp}.
+#' The first two compute a LOD score using the Kong and Cox linear model, and are
+#' designated in the file as 'all' and 'pairs', respectively;
+#' the third complements the LOD score by computing an ExLOD score using the
+#' Kong and Cox exponential mode.
 #'
 #' @param npartbl The name of a \code{fam_nonparametric.tbl}
 #' file output by MERLIN
@@ -137,6 +149,8 @@ summary.npartbl <- function(npartbl) {
 }
 
 
+#' Print Summary of \code{npartbl} Object
+#'
 #' @param npartbl An object of class \code{summary.npartbl}
 #'
 #' @method print summary.npartbl

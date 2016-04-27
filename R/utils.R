@@ -15,7 +15,6 @@
 #' match_vec("alphaandbeta")
 #' match_vec(c("this has thealpha", "beta in here"))
 #'
-#' @export
 match_vec <- function(x, a = "alpha", b = "beta") {
   stopifnot(is.character(x), is.character(a), is.character(b))
   stopifnot(length(a) == 1, length(b) == 1)

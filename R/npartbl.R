@@ -72,4 +72,82 @@ npartbl <- function(npartbl) {
 
 }
 
+#' Get \code{npartbl} Table
+#'
+#' @param npartbl An object of class \code{npartbl}.
+#'
+#' @return A data.frame with the chromosome, pos_cm, analysis,
+#' lod and exlod columns from a \code{npartbl} object.
+#'
+#' @examples
+#' get_npartbl(npartbl("fam_nonparametric.tbl"))
+#'
+#' @export
+get_npartbl <- function(npartbl) {
+  stopifnot(inherits(npartbl, "npartbl"))
+  lods_per_analysis <- dplyr::bind_rows(npartbl$lods, .id = "analysis")
+  data.frame(chrom = npartbl$chrom,
+             pos_cm = npartbl$pos_cm,
+             lods_per_analysis)
+}
 
+
+#' Print Head, Middle and Tail of \code{npartbl} Table
+#'
+#' Prints the head, middle and tail of a \code{npartbl} table.
+#'
+#' If the \code{npartbl} object has only one analysis (e.g. 'all'),
+#' the middle
+#'
+#' @param npartbl An object of class \code{npartbl}.
+#' @param n Number of rows to show in the head, middle and tail
+#'
+#' @export
+print.npartbl <- function(npartbl, n = 6L) {
+  stopifnot(inherits(npartbl, "npartbl"))
+  stopifnot(length(n) == 1L, is.numeric(n), n > 0)
+  if (n > 100L) {
+    stop(paste("Giving an n of", n, "will clutter your screen.",
+               "Use one lower than 100."))
+  }
+  tbl <- get_npartbl(npartbl)
+  print(head(tbl, n = n))
+  cat("--------\n")
+  nr <- nrow(tbl)
+  midn <- floor(n / 2)
+  print(tbl[((nr / 2) - midn + 1):((nr / 2) + midn), ])
+  cat("--------\n")
+  print(tail(tbl))
+}
+
+#' Return Summary of \code{npartbl} Object
+#'
+#' @param npartbl An object of class \code{npartbl}.
+#'
+#' @return A list (of class \code{summary.npartbl}) containing summary information about
+#' the \code{npartbl} object.
+#'
+#' @export
+summary.npartbl <- function(npartbl) {
+  stopifnot(inherits(npartbl, "npartbl"))
+  structure(list(chrom = npartbl$chrom,
+       n_markers = npartbl$n_markers,
+       analysis = npartbl$analysis,
+       max_lods = npartbl$max_lods), class = "summary.npartbl")
+}
+
+
+#' @param npartbl An object of class \code{summary.npartbl}
+#'
+#' @method print summary.npartbl
+#' @export
+print.summary.npartbl <- function(npartbl) {
+  stopifnot(inherits(npartbl, "summary.npartbl"))
+  cat("MERLIN nonparametric.tbl\n",
+      "--------------------------",
+      "chrom: ", npartbl$chrom, "\n",
+      "n_markers: ", npartbl$n_markers, "\n",
+      "analysis: ", paste(npartbl$analysis, collapse = " and "), "\n",
+      "max_lods:\n", sep = "")
+  print(npartbl$max_lods)
+}

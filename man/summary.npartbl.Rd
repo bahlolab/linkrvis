@@ -10,8 +10,8 @@
 \item{npartbl}{An object of class \code{npartbl}.}
 }
 \value{
-A list (of class \code{summary.npartbl}) containing summary information about
-the \code{npartbl} object.
+A list (of class \code{summary.npartbl}) containing summary
+information about the \code{npartbl} object.
 }
 \description{
 Return Summary of \code{npartbl} Object

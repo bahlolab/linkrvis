@@ -8,7 +8,11 @@ ped <- linkrvis::read_merlin_ped(file.path(data_path, "merlin_10_c10orf_extended
 # npar <- linkrvis::read_merlin_npartbl(file.path(data_path, "merlin_10_c10orf_extended-nonparametric.tbl"))
 
 ## npartbl
+rm(list = ls())
 data_path <- "~/Desktop/c10orf2/merlin_output/joint_merlin"
-fname <- file.path(data_path, "merlin_10_c10orf_extended-nonparametric.tbl")
-npar <- linkrvis::npartbl()
+npar <- linkrvis::npartbl(file.path(data_path, "merlin_10_c10orf_extended-nonparametric.tbl"))
+
+npar
+summary(npar)
+
 

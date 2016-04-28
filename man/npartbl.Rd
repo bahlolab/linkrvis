@@ -15,38 +15,33 @@ S3 object of class \code{npartbl}, which is
 a list with:
 \itemize{
   \item chrom: character vector of length 1
-  \item analysis: character vector of length 1 or 2
-  \item pos_cm: numeric vector with cM positions
   \item n_markers: character vector of length 1
-  \item lods: list of one or two data frames:
-    \enumerate{
-  \item all: data.frame with two numeric columns: lod and exlod
-  \item pairs: data.frame with two numeric columns: lod and exlod
-    }
   }
 }
 \description{
 Returns an S3 object of class \code{npartbl} which is basically
-a more compact list containing MERLIN's \code{fam_parametric.tbl} file.
+a cleaner version of MERLIN's \code{fam_parametric.tbl} file.
 }
 \details{
-MERLIN's \code{--tabulate} option outputs convenient tables summarising
-linkage analysis results in two files:
-\code{fam_nonparametric.tbl} and \code{fam_parametric.tbl}.
+MERLIN's \code{--tabulate} option is used to output convenient tables
+summarising linkage analysis results in two files:
+\code{fam_parametric.tbl} and \code{fam_nonparametric.tbl}.
 
 The \code{fam_nonparametric.tbl} file will be output if MERLIN is run with
 at least one of the options \code{--npl} or \code{--pairs}.
 These compute a LOD score using the Kong and Cox linear model, which is found
-in the 'lod' column. The two options are
-designated in the 'analysis' column of the file by 'all' and 'pairs',
-respectively.
+in the 'LOD' column. The two options are
+designated in the 'ANALYSIS' column of the file by character strings containing
+'ALL' and 'pairs', respectively.
 
 If the \code{--exp} option is also specified,
 an additional LOD score is calculated using the
-Kong and Cox exponential mode. This is found in the 'exlod' column.
+Kong and Cox exponential mode. This is found in the 'ExLOD' column.
 
-If the family consists of a single affected sibpair, the 'all' and 'pairs'
-statistics will be identical.
+If the family consists of a single affected sibpair, the 'ALL' and 'pairs'
+statistics will be identical. The 'pairs' statistic also considers sharing
+within inbred individuals. For more information, see MERLIN's website:
+\url{http://csg.sph.umich.edu/abecasis/merlin/index.html}
 }
 \examples{
 npartbl_obj <- npartbl("merlin_10_famA-nonparametric.tbl")

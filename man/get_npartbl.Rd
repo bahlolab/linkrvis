@@ -10,7 +10,7 @@ get_npartbl(npartbl)
 \item{npartbl}{An object of class \code{npartbl}.}
 }
 \value{
-A data.frame with the chromosome, pos_cm, analysis,
+A data.frame with the chromosome, position, analysis,
 lod and exlod columns from a \code{npartbl} object.
 }
 \description{

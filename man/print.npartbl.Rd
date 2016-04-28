@@ -14,8 +14,4 @@
 \description{
 Prints the head, middle and tail of a \code{npartbl} table.
 }
-\details{
-If the \code{npartbl} object has only one analysis (e.g. 'all'),
-the middle
-}
 

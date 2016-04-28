@@ -14,13 +14,17 @@ file output by MERLIN}
 S3 object of class \code{npartbl}, which is
 a list with:
 \itemize{
+  \item npartbl: data.frame with 4 or 5* columns (chr, pos, analysis, lod, exlod*)
   \item chrom: character vector of length 1
   \item n_markers: character vector of length 1
+  \item merlin_options: character vector of length 3, indicating
+  the options inferred to have been supplied to MERLIN for the nonparametric
+  linkage analysis
   }
 }
 \description{
 Returns an S3 object of class \code{npartbl} which is basically
-a cleaner version of MERLIN's \code{fam_parametric.tbl} file.
+a cleaner version of MERLIN's \code{fam_nonparametric.tbl} file.
 }
 \details{
 MERLIN's \code{--tabulate} option is used to output convenient tables

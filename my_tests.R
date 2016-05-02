@@ -19,11 +19,19 @@ partbl <- linkrvis::partbl(file.path(data_path, "merlin_10_c10orf_extended-param
 
 ### Plotting
 require(ggplot2)
-require(dplyr)
 require(tidyr)
+require(dplyr)
 
-plot_partbl <- function(partbl, variables = c("lod", "alpha", "hlod"))
-partbl$partbl %>%
+plot_partbl <- function(partbl, var = c("lod", "alpha", "hlod")) {
+  stopifnot(is.character(var),
+            var %in% c("lod", "alpha", "hlo"))
+}
+
+plot_data <- function(partbl, var = c()) {
+  dplyr::select_(.data = partbl, )
+
+}
+partbl$partbl %>% head %>% str
   dplyr::select(pos, c("lod", "alpha", "hlod"))
   dplyr::select(pos, lod, alpha, hlod)
   tidyr::gather(variable, value, lod:hlod) %>%

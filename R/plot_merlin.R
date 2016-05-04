@@ -18,13 +18,14 @@
 #'
 #' @export
 plot.partbl <- function(partbl, vars = c("lod", "alpha", "hlod")) {
-  stopifnot(inherits(partbl, "partbl"))
+  stopifnot(inherits(partbl, "partbl", "list"))
   DF <- partbl2ggdata(partbl, vars)
   p <- DF %>%
     ggplot(aes(x = pos, y = value, colour = variable)) +
     geom_line() +
     theme_bw() +
-    facet_wrap( ~ variable, ncol = 1, scales = "free_y")
+    facet_wrap( ~ variable, ncol = 1, scales = "free_y") +
+    ggtitle(paste0("Chromosome ", partbl$chrom))
   p
 
 }
@@ -48,12 +49,20 @@ plot.partbl <- function(partbl, vars = c("lod", "alpha", "hlod")) {
 #'
 #' @export
 partbl2ggdata <- function(partbl, vars = c("lod", "alpha", "hlod")) {
-  stopifnot(inherits(partbl, "partbl"),
+  stopifnot(inherits(partbl, c("partbl", "list")),
             vars %in% c("lod", "alpha", "hlod"))
 
-
-  partbl$partbl %>%
-    dplyr::select_( ~ (one_of(c("pos", vars)))) %>%
-    tidyr::gather_("variable", "value", vars)
+  if (inherits(partbl, "list")) {
+    stopifnot(all(sapply(partbl, class) == "partbl"))
+    ### bind rows and melt
+    dplyr::bind_rows(partbl) %>%
+      dplyr::select_( ~ (one_of(c("chr", "pos", vars)))) %>%
+      tidyr::gather_("variable", "value", vars)
+  }
+  else if (inherits(partbl, "partbl")) {
+    partbl$partbl %>%
+      dplyr::select_( ~ (one_of(c("pos", vars)))) %>%
+      tidyr::gather_("variable", "value", vars)
+  }
 }
 

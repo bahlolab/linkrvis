@@ -168,9 +168,9 @@ print.summary.npartbl <- function(npartbl) {
   cat("MERLIN nonparametric.tbl\n",
       "--------------------------\n",
       "Chromosome number: ", npartbl$chrom, "\n",
-      "Chromosome range:\n", sep = "")
-  print(npartbl$pos_range)
-  cat("Number of markers: ", npartbl$n_markers, "\n",
+      "Chromosome range: ",
+      npartbl$pos_range["min_pos"], "cM - ", npartbl$pos_range["max_pos"], "cM\n",
+      "Number of markers: ", npartbl$n_markers, "\n",
       "MERLIN nonparametric options used:\n", sep = "")
   print(npartbl$merlin_options)
 }

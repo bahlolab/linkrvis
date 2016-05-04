@@ -136,9 +136,9 @@ print.summary.partbl <- function(partbl) {
   cat("MERLIN parametric.tbl\n",
       "--------------------------\n",
       "Chromosome number: ", partbl$chrom, "\n",
-      "Chromosome range:\n", sep = "")
-  print(partbl$pos_range)
-  cat("Number of markers: ", partbl$n_markers, "\n",
-      "MERLIN genetic model used:\n", partbl$gen_model, "\n", sep = "")
+      "Chromosome range: ",
+      partbl$pos_range["min_pos"], "cM - ", partbl$pos_range["max_pos"], "cM\n",
+      "Number of markers: ", partbl$n_markers, "\n",
+      "MERLIN genetic model used: ", partbl$gen_model, "\n", sep = "")
 }
 

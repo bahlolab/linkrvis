@@ -14,10 +14,11 @@ file output by MERLIN}
 S3 object of class \code{partbl}, which is
 a list with:
 \itemize{
-  \item chrom: character vector of length 1
-  \item n_markers: character vector of length 1
-  \item gen_model: character vector of length 1
   \item partbl: data.frame with 6 columns (chr, pos, model, lod, alpha, hlod)
+  \item chrom: character vector of length 1 giving chromosome number
+  \item n_markers: character vector of length 1 giving number of markers used
+  \item gen_model: character vector of length 1 giving model specified
+  \item pos_range: numeric vector of length 2 giving range of pos column
   }
 }
 \description{

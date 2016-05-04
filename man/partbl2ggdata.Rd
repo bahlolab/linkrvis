@@ -4,7 +4,7 @@
 \alias{partbl2ggdata}
 \title{\code{partbl} GG Data Preparation}
 \usage{
-partbl2ggdata(partbl, vars = c("lod", "alpha", "hlod"), threshold = 0)
+partbl2ggdata(partbl, vars = c("lod", "alpha", "hlod"))
 }
 \arguments{
 \item{partbl}{An object of class \code{partbl}.}

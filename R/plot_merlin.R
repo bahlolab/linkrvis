@@ -3,7 +3,9 @@
 #' Plots the LOD, ALPHA and HLOD scores in MERLIN's \code{famA-parametric.tbl} file
 #'
 #' @param partbl An object of class \code{partbl}.
-#' @param ... Other arguments passed on to \code{\link{partbl2ggdata}}.
+#' @param vars A character vector indicating which variable(s) to plot. Available
+#'        variables from the \code{partbl} file are: "lod", "alpha" and "hlod".
+#' @param threshold Numeric of length one. Only plot values above or equal to this.
 #'
 #' @return A ggplot object, plotting the selected variables
 #'
@@ -15,9 +17,9 @@
 #' plot(pt)
 #'
 #' @export
-plot.partbl <- function(partbl, ...) {
+plot.partbl <- function(partbl, vars = c("lod", "alpha", "hlod")) {
   stopifnot(inherits(partbl, "partbl"))
-  DF <- partbl2ggdata(partbl, ...)
+  DF <- partbl2ggdata(partbl, vars)
   p <- DF %>%
     ggplot(aes(x = pos, y = value, colour = variable)) +
     geom_line() +
@@ -45,14 +47,13 @@ plot.partbl <- function(partbl, ...) {
 #' head(pt_ggdata)
 #'
 #' @export
-partbl2ggdata <- function(partbl, vars = c("lod", "alpha", "hlod"), threshold = 0) {
+partbl2ggdata <- function(partbl, vars = c("lod", "alpha", "hlod")) {
   stopifnot(inherits(partbl, "partbl"),
-            vars %in% c("lod", "alpha", "hlod"),
-            is.numeric(threshold))
+            vars %in% c("lod", "alpha", "hlod"))
+
 
   partbl$partbl %>%
     dplyr::select_( ~ (one_of(c("pos", vars)))) %>%
-    tidyr::gather_("variable", "value", vars) %>%
-    dplyr::filter_( ~ (value >= threshold))
+    tidyr::gather_("variable", "value", vars)
 }
 

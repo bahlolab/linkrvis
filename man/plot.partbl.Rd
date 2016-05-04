@@ -4,12 +4,15 @@
 \alias{plot.partbl}
 \title{Plot MERLIN Parametric LOD Scores}
 \usage{
-\method{plot}{partbl}(partbl, ...)
+\method{plot}{partbl}(partbl, vars = c("lod", "alpha", "hlod"))
 }
 \arguments{
 \item{partbl}{An object of class \code{partbl}.}
 
-\item{...}{Other arguments passed on to \code{\link{partbl2ggdata}}.}
+\item{vars}{A character vector indicating which variable(s) to plot. Available
+variables from the \code{partbl} file are: "lod", "alpha" and "hlod".}
+
+\item{threshold}{Numeric of length one. Only plot values above or equal to this.}
 }
 \value{
 A ggplot object, plotting the selected variables

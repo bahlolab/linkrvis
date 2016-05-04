@@ -20,6 +20,7 @@ a list with:
   \item merlin_options: character vector of length 3, indicating
   the options inferred to have been supplied to MERLIN for the nonparametric
   linkage analysis
+  \item pos_range: numeric vector of length 2 giving range of pos column
   }
 }
 \description{

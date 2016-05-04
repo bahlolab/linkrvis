@@ -35,6 +35,7 @@
 #'   \item merlin_options: character vector of length 3, indicating
 #'   the options inferred to have been supplied to MERLIN for the nonparametric
 #'   linkage analysis
+#'   \item pos_range: numeric vector of length 2 giving range of pos column
 #'   }
 #'
 #' @examples
@@ -54,6 +55,10 @@ npartbl <- function(npartbl) {
   stopifnot(all(required_cols %in% names(npartbl)))
   chrom <- unique(npartbl$chr)
   stopifnot(length(chrom) == 1, chrom %in% 1:23)
+
+  # Get pos limits for plotting
+  pos_range <- setNames(range(npartbl$pos), c("min_pos", "max_pos"))
+
 
   # Guess which MERLIN options were specified
   merlin_options <- c(npl = FALSE, pairs = FALSE, exp = FALSE)
@@ -82,14 +87,14 @@ npartbl <- function(npartbl) {
 
   npl_ind <- grep("all", npartbl$analysis, ignore.case = TRUE)
   pairs_ind <- grep("pairs", npartbl$analysis, ignore.case = TRUE)
-
   npartbl$analysis[npl_ind] <- "all"
   npartbl$analysis[pairs_ind] <- "pairs"
 
   structure(list(npartbl = npartbl,
                  chrom = chrom,
                  merlin_options = merlin_options,
-                 n_markers = (nrow(npartbl) / 2)),
+                 n_markers = (nrow(npartbl) / 2),
+                 pos_range = pos_range),
             class = "npartbl")
 }
 
@@ -147,7 +152,8 @@ summary.npartbl <- function(npartbl) {
   stopifnot(inherits(npartbl, "npartbl"))
   structure(list(chrom = npartbl$chrom,
                  n_markers = npartbl$n_markers,
-                 merlin_options = npartbl$merlin_options),
+                 merlin_options = npartbl$merlin_options,
+                 pos_range = npartbl$pos_range),
             class = "summary.npartbl")
 }
 
@@ -162,7 +168,9 @@ print.summary.npartbl <- function(npartbl) {
   cat("MERLIN nonparametric.tbl\n",
       "--------------------------\n",
       "Chromosome number: ", npartbl$chrom, "\n",
-      "Number of markers: ", npartbl$n_markers, "\n",
+      "Chromosome range:\n", sep = "")
+  print(npartbl$pos_range)
+  cat("Number of markers: ", npartbl$n_markers, "\n",
       "MERLIN nonparametric options used:\n", sep = "")
   print(npartbl$merlin_options)
 }

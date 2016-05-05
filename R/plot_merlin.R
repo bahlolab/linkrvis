@@ -55,14 +55,17 @@ partbl2ggdata <- function(partbl, vars = c("lod", "alpha", "hlod")) {
   if (inherits(partbl, "list")) {
     stopifnot(all(sapply(partbl, class) == "partbl"))
     ### bind rows and melt
-    dplyr::bind_rows(partbl) %>%
+    DF_list <- lapply(partbl, "[[", "partbl")
+    DF <- dplyr::bind_rows(DF_list) %>%
       dplyr::select_( ~ (one_of(c("chr", "pos", vars)))) %>%
-      tidyr::gather_("variable", "value", vars)
+      tidyr::gather_("variable", "value", vars) %>%
+      dplyr::arrange_(~(chr))
   }
   else if (inherits(partbl, "partbl")) {
-    partbl$partbl %>%
+    DF <- partbl$partbl %>%
       dplyr::select_( ~ (one_of(c("pos", vars)))) %>%
       tidyr::gather_("variable", "value", vars)
   }
+  DF
 }
 

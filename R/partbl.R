@@ -1,72 +1,56 @@
 #' MERLIN \code{partbl} Object
 #'
 #' Returns an S3 object of class \code{partbl} which is basically
-#' a cleaner version of MERLIN's \code{fam_parametric.tbl} file.
+#' a compact version of MERLIN's \code{fam_parametric.tbl} files.
 #'
 #' MERLIN's \code{--tabulate} option is used to output convenient tables
-#' summarising linkage analysis results in two files:
-#' \code{fam_parametric.tbl} and \code{fam_nonparametric.tbl}.
+#' summarising linkage analysis results in two files per chromosome:
+#' \code{chrA_parametric.tbl} and \code{chrA_nonparametric.tbl}.
 #'
-#' The \code{fam_parametric.tbl} file will be output if MERLIN is run with
+#' The \code{parametric.tbl} file will be output if MERLIN is run with
 #' the option \code{--model genetic_model.txt}.
 #' This uses the genetic model specified in the input file to calculate three
-#' statistics: a multipoint parametric LOD score ('LOD' column),
+#' statistics: a multipoint parametric LOD score ('lod' column),
 #' an estimate of the proportion of linked families at a given locus
-#' ('ALPHA' column), and the corresponding maximum heterogeneity LOD
-#' score ('HLOD' column).
+#' ('alpha' column), and the corresponding maximum heterogeneity LOD
+#' score ('hlod' column).
 #' For more information, see MERLIN's website:
 #' \url{http://csg.sph.umich.edu/abecasis/merlin/index.html}
 #'
-#' @param partbl The name of a \code{fam_parametric.tbl}
-#' file output by MERLIN
+#' @param fname Character vector containing the \code{parametric.tbl} file name(s)
+#' output by MERLIN.
 #'
-#' @return S3 object of class \code{partbl}, which is
-#' a list with:
-#' \itemize{
-#'   \item partbl: data.frame with 6 columns (chr, pos, model, lod, alpha, hlod)
-#'   \item chrom: character vector of length 1 giving chromosome number
-#'   \item n_markers: character vector of length 1 giving number of markers used
-#'   \item gen_model: character vector of length 1 giving model specified
-#'   \item pos_range: numeric vector of length 2 giving range of pos column
+#' @return S3 object of class \code{partbl}, which is a list with:
+#'         \itemize{
+#'           \item partbl: data.frame with 6 columns
+#'                (chr, pos, model, lod, alpha, hlod)
+#'           \item summary_partbl: data.frame with 5 columns
+#'                (fname, chr, n_markers, gen_model, pos_range, max_lod, max_hlod)
 #'   }
 #'
 #' @examples
-#' partbl_obj <- partbl("merlin_10_famA-parametric.tbl")
+#' partbl_chr9 <- partbl("chr9-parametric.tbl")
+#' partbl_chr24 <- partbl(c("chr2-parametric.tbl", "chr4-parametric.tbl"))
+#' partbl_all <- partbl(list.files(path = "merlin/", pattern = "-parametric.tbl"))
+#'
+#' @importFrom dplyr %>%
 #'
 #' @export
-partbl <- function(partbl) {
+partbl <- function(fname) {
+  stopifnot(!missing(fname), is.character(fname))
+  DF_list <- lapply(fname, read_merlin_partbl)
+  partbl <- dplyr::bind_rows(DF_list)
 
-  stopifnot(!missing(partbl))
-  if (is.character(partbl) && length(partbl) == 1) {
-    partbl <- read_merlin_partbl(partbl)
-  } else {
-    stop("You need to give the full path to the parametric.tbl file.")
-  }
-  names(partbl) <- tolower(names(partbl))
-  required_cols <- c("chr", "pos", "label", "model", "lod", "alpha", "hlod")
-  stopifnot(all(required_cols %in% names(partbl)))
-  chrom <- unique(partbl$chr)
-  stopifnot(length(chrom) == 1, chrom %in% 1:23)
-  gen_model <- unique(partbl$model)
-  if (length(gen_model) != 1) {
-    stop("You have probably specified more than one model in MERLIN's ",
-         "--model input file. Oops.")
-  }
-  # See if 100*pos and label are the same
-  # If so, rename label to pos and remove
-  x <- (100 * partbl$pos) - partbl$label
-  stopifnot(all(x < 0.0001))
-  partbl$pos <- partbl$label
-  partbl$label <- NULL
+  # At this stage we have a data.frame with chr-pos-model-lod-alpha-hlod
+  max_lods <- partbl %>%
+    dplyr::group_by_(~chr) %>%
+    dplyr::summarise_each_(funs(max), c(max_lod = "lod", max_hlod = "hlod"))
 
-  # Get pos limits for plotting
-  pos_range <- setNames(range(partbl$pos), c("min_pos", "max_pos"))
+  n_markers <- partbl %>% dplyr::count_(~chr)
 
   structure(list(partbl = partbl,
-                 chrom = chrom,
-                 n_markers = nrow(partbl),
-                 gen_model = gen_model,
-                 pos_range = pos_range),
+                 n_markers = n_markers,
+                 max_lods = max_lods),
             class = "partbl")
 }
 
@@ -118,10 +102,9 @@ print.partbl <- function(partbl, n = 6L) {
 #' @export
 summary.partbl <- function(partbl) {
   stopifnot(inherits(partbl, "partbl"))
-  structure(list(chrom = partbl$chrom,
-                 n_markers = partbl$n_markers,
-                 gen_model = partbl$gen_model,
-                 pos_range = partbl$pos_range),
+  structure(list(n_markers = partbl$n_markers,
+                 gen_model = unique(partbl$partbl$model),
+                 max_lods = partbl$max_lods),
             class = "summary.partbl")
 }
 
@@ -131,14 +114,13 @@ summary.partbl <- function(partbl) {
 #'
 #' @method print summary.partbl
 #' @export
-print.summary.partbl <- function(partbl) {
-  stopifnot(inherits(partbl, "summary.partbl"))
+print.summary.partbl <- function(partbl_summary) {
+  stopifnot(inherits(partbl_summary, "summary.partbl"))
   cat("MERLIN parametric.tbl\n",
       "--------------------------\n",
-      "Chromosome number: ", partbl$chrom, "\n",
-      "Chromosome range: ",
-      partbl$pos_range["min_pos"], "cM - ", partbl$pos_range["max_pos"], "cM\n",
-      "Number of markers: ", partbl$n_markers, "\n",
-      "MERLIN genetic model used: ", partbl$gen_model, "\n", sep = "")
+      "Number of markers per chromosome:\n", sep = "")
+  print(as.data.frame(partbl_summary$n_markers))
+  cat("MERLIN genetic model used: ", partbl_summary$gen_model, "\n", sep = "")
+  cat("Maximum LOD scores per chromosome:\n", sep = "")
+  print(as.data.frame(partbl_summary$max_lods))
 }
-

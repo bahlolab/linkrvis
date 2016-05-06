@@ -4,7 +4,7 @@
 \alias{print.summary.partbl}
 \title{Print Summary of \code{partbl} Object}
 \usage{
-\method{print}{summary.partbl}(partbl)
+\method{print}{summary.partbl}(partbl_summary)
 }
 \arguments{
 \item{partbl}{An object of class \code{summary.partbl}}

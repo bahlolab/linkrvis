@@ -2,20 +2,20 @@
 % Please edit documentation in R/read_merlin.R
 \name{read_merlin_partbl}
 \alias{read_merlin_partbl}
-\title{Read MERLIN \code{fam_parametric.tbl}}
+\title{Read MERLIN \code{parametric.tbl}}
 \usage{
-read_merlin_partbl(fname)
+read_merlin_partbl(fname, verbose = TRUE)
 }
 \arguments{
 \item{fname}{The file name to read.}
 }
 \value{
-A \code{data.frame}.
+A \code{data.frame} with the columns
 }
 \description{
-Read the \code{fam_parametric.tbl} file output by MERLIN.
+Read the \code{parametric.tbl} file output by MERLIN.
 }
 \examples{
-read_merlin_partbl("merlin_13_famA-parametric.tbl")
+read_merlin_partbl("merlin_chr13-parametric.tbl")
 }
 

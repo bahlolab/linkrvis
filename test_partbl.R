@@ -1,15 +1,24 @@
 rm(list = ls())
 data_path <- "~/Desktop/c10orf2/merlin_output/joint_merlin"
-methods(class = "partbl")
 
+# Single
 par <- linkrvis::partbl(file.path(data_path, "merlin_10_c10orf_extended-parametric.tbl"))
-DF <- partbl2ggdata(par)
-str(DF)
-set.seed(123)
-(multipar <- sample(list.files(data_path, pattern = "-parametric.tbl", full.names = TRUE), 5))
-partbl_list <- lapply(multipar, linkrvis::partbl)
-DF2 <- partbl2ggdata(partbl_list)
-str(DF2)
+par
+summary(par)
 
-DF_list <- lapply(partbl_list, "[[", "partbl")
+# Multi
+par_fnames <- list.files(data_path, pattern = "-parametric.tbl", full.names = TRUE)
+par <- linkrvis::partbl(par_fnames)
+
+summary(par)
+
 vars <- c("lod", "alpha", "hlod")
+DF <- partbl2ggdata(par, vars)
+p <- DF %>%
+  ggplot(aes(x = pos, y = value, colour = variable)) +
+  geom_line() +
+  theme_bw()
+p + facet_grid(variable ~ chr, scales = "free_y") +
+  theme(panel.margin.x = unit(0, "lines"))
+  # ggtitle(paste0("Chromosome ", partbl$chrom))
+p

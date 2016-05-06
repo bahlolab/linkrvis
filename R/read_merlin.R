@@ -1,16 +1,42 @@
-#' Read MERLIN \code{fam_parametric.tbl}
+#' Read MERLIN \code{parametric.tbl}
 #'
-#' Read the \code{fam_parametric.tbl} file output by MERLIN.
-#'
+#' Read the \code{parametric.tbl} file output by MERLIN.
 #'
 #' @param fname The file name to read.
 #'
-#' @return A \code{data.frame}.
+#' @return A \code{data.frame} with the columns
 #' @export
 #'
-#' @examples read_merlin_partbl("merlin_13_famA-parametric.tbl")
-read_merlin_partbl <- function(fname) {
-  read.table(fname, header = TRUE, comment.char = "", stringsAsFactors = FALSE)
+#' @examples read_merlin_partbl("merlin_chr13-parametric.tbl")
+read_merlin_partbl <- function(fname, verbose = TRUE) {
+  partbl <- read.table(fname, header = TRUE, comment.char = "", stringsAsFactors = FALSE)
+  names(partbl) <- tolower(names(partbl))
+  required_cols <- c("chr", "pos", "label", "model", "lod", "alpha", "hlod")
+  stopifnot(all(required_cols == names(partbl)))
+  if (nrow(partbl) > 0) {
+    chrom <- unique(partbl$chr)
+    stopifnot(length(chrom) == 1, chrom %in% 1:23)
+    gen_model <- unique(partbl$model)
+    if (length(gen_model) != 1) {
+      stop("You have probably specified more than one model in MERLIN's ",
+           "--model input file. Oops.")
+    }
+    # See if 100*pos and label are the same
+    # If so, rename label to pos and remove
+    x <- (100 * partbl$pos) - partbl$label
+    stopifnot(all(x < 0.0001))
+  } else {
+    if (verbose) {
+      message("'", fname, "'\n",
+              "is empty. It is probably for chrX and MERLIN didn't output\n",
+              "LOD scores for it since it was extremely unlikely to contain\n",
+              "the disease-causing mutation under the selected genetic model.\n",
+              "Returning a 0-row data.frame. This won't be shown in a plot.")
+    }
+  }
+  partbl$pos <- partbl$label
+  partbl$label <- NULL
+  return(partbl)
 }
 
 #' Read MERLIN \code{fam_nonparametric.tbl}

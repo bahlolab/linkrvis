@@ -1,77 +1,67 @@
 #' MERLIN \code{npartbl} Object
 #'
 #' Returns an S3 object of class \code{npartbl} which is basically
-#' a cleaner version of MERLIN's \code{fam_nonparametric.tbl} file.
+#' a compact version of MERLIN's \code{fam_nonparametric.tbl} files.
 #'
 #' MERLIN's \code{--tabulate} option is used to output convenient tables
-#' summarising linkage analysis results in two files:
-#' \code{fam_parametric.tbl} and \code{fam_nonparametric.tbl}.
+#' summarising linkage analysis results in two files per chromosome:
+#' \code{chrA_parametric.tbl} and \code{chrA_nonparametric.tbl}.
 #'
-#' The \code{fam_nonparametric.tbl} file will be output if MERLIN is run with
+#' The \code{nonparametric.tbl} file will be output if MERLIN is run with
 #' at least one of the options \code{--npl} or \code{--pairs}.
 #' These compute a LOD score using the Kong and Cox linear model, which is found
-#' in the 'LOD' column. The two options are
-#' designated in the 'ANALYSIS' column of the file by character strings containing
+#' in the 'lod' column. The two options are
+#' designated in the 'analysis' column of the file by character strings containing
 #' 'ALL' and 'pairs', respectively.
 #'
 #' If the \code{--exp} option is also specified,
 #' an additional LOD score is calculated using the
-#' Kong and Cox exponential mode. This is found in the 'ExLOD' column.
+#' Kong and Cox exponential mode. This is found in the 'exlod' column.
 #'
 #' If the family consists of a single affected sibpair, the 'ALL' and 'pairs'
 #' statistics will be identical. The 'pairs' statistic also considers sharing
 #' within inbred individuals. For more information, see MERLIN's website:
 #' \url{http://csg.sph.umich.edu/abecasis/merlin/index.html}
 #'
-#' @param npartbl The name of a \code{fam_nonparametric.tbl}
-#' file output by MERLIN
+#' @param fname Character vector containing the \code{nonparametric.tbl} file name(s)
+#' output by MERLIN.
 #'
 #' @return S3 object of class \code{npartbl}, which is
 #' a list with:
 #' \itemize{
-#'   \item npartbl: data.frame with 4 or 5* columns (chr, pos, analysis, lod, exlod*)
-#'   \item chrom: character vector of length 1
-#'   \item n_markers: character vector of length 1
+#'   \item npartbl: data.frame with 4 or 5* columns
+#'         (chr, pos, analysis, lod, exlod*)
+#'   \item max_lods: data.frame with 3 columns
+#'         (chr, max_lod, max_hlod)
+#'   \item n_markers: data.frame with 2 columns
+#'         (chr, n)
 #'   \item merlin_options: character vector of length 3, indicating
 #'   the options inferred to have been supplied to MERLIN for the nonparametric
 #'   linkage analysis
-#'   \item pos_range: numeric vector of length 2 giving range of pos column
 #'   }
 #'
 #' @examples
-#' npartbl_obj <- npartbl("merlin_10_famA-nonparametric.tbl")
+#' npartbl_chr9 <- npartbl("chr9-nonparametric.tbl")
+#' npartbl_chr24 <- npartbl(c("chr2-parametric.tbl", "chr4-nonparametric.tbl"))
+#' npartbl_all <- npartbl(list.files(path = "merlin/", pattern = "-nonparametric.tbl"))
+#'
+#' @importFrom dplyr %>%
 #'
 #' @export
-npartbl <- function(npartbl) {
-
-  stopifnot(!missing(npartbl))
-  if (is.character(npartbl) && length(npartbl) == 1) {
-    npartbl <- read_merlin_npartbl(npartbl)
-  } else {
-    stop("You need to give the full path to the nonparametric.tbl file.")
-  }
-  names(npartbl) <- tolower(names(npartbl))
-  required_cols <- c("chr", "pos", "analysis", "lod")
-  stopifnot(all(required_cols %in% names(npartbl)))
-  chrom <- unique(npartbl$chr)
-  stopifnot(length(chrom) == 1, chrom %in% 1:23)
-
-  # Get pos limits for plotting
-  pos_range <- setNames(range(npartbl$pos), c("min_pos", "max_pos"))
+npartbl <- function(fname) {
+  stopifnot(!missing(fname), is.character(fname))
+  DF_list <- lapply(fname, read_merlin_npartbl)
+  npartbl <- dplyr::bind_rows(DF_list) %>%
+    dplyr::arrange_(~chr, ~analysis)
 
 
   # Guess which MERLIN options were specified
   merlin_options <- c(npl = FALSE, pairs = FALSE, exp = FALSE)
   if ("exlod" %in% names(npartbl)) {
     merlin_options["exp"] <- TRUE
-    required_cols <- c(required_cols, "exlod")
   }
-  npartbl <- npartbl[required_cols]
 
   atab <- table(npartbl[["analysis"]])
-  # if two counts, should be same
-  stopifnot(length(atab) %in% c(1, 2),
-            abs(max(atab) - min(atab)) < 0.01)
   npl_atab <- grep("all", names(atab), ignore.case = TRUE)
   pairs_atab <- grep("pairs", names(atab), ignore.case = TRUE)
   if (length(npl_atab) == 1 && length(pairs_atab) == 1 && npl_atab != pairs_atab) {
@@ -90,11 +80,21 @@ npartbl <- function(npartbl) {
   npartbl$analysis[npl_ind] <- "all"
   npartbl$analysis[pairs_ind] <- "pairs"
 
+  # At this stage we have a data.frame with chr-pos-analysis-lod-exlod
+  max_lods <- npartbl %>%
+    dplyr::group_by_(~chr, ~analysis) %>%
+    dplyr::summarise_(max_lod = ~max(lod),
+                      max_exlod = ~max(exlod))
+
+  n_markers <- npartbl %>%
+    dplyr::group_by_(~chr, ~analysis) %>%
+    dplyr::tally()
+
+
   structure(list(npartbl = npartbl,
-                 chrom = chrom,
-                 merlin_options = merlin_options,
-                 n_markers = (nrow(npartbl) / 2),
-                 pos_range = pos_range),
+                 n_markers = n_markers,
+                 max_lods = max_lods,
+                 merlin_options = merlin_options),
             class = "npartbl")
 }
 
@@ -133,11 +133,7 @@ print.npartbl <- function(npartbl, n = 6L) {
   tbl <- get_npartbl(npartbl)
   print(head(tbl, n = n))
   cat("--------\n")
-  nr <- nrow(tbl)
-  midn <- floor(n / 2)
-  print(tbl[((nr / 2) - midn + 1):((nr / 2) + midn), ])
-  cat("--------\n")
-  print(tail(tbl))
+  print(tail(tbl, n = n))
 }
 
 #' Return Summary of \code{npartbl} Object
@@ -150,27 +146,27 @@ print.npartbl <- function(npartbl, n = 6L) {
 #' @export
 summary.npartbl <- function(npartbl) {
   stopifnot(inherits(npartbl, "npartbl"))
-  structure(list(chrom = npartbl$chrom,
-                 n_markers = npartbl$n_markers,
+  structure(list(n_markers = npartbl$n_markers,
                  merlin_options = npartbl$merlin_options,
-                 pos_range = npartbl$pos_range),
+                 max_lods = npartbl$max_lods),
             class = "summary.npartbl")
 }
 
 #' Print Summary of \code{npartbl} Object
 #'
-#' @param npartbl An object of class \code{summary.npartbl}
+#' @param npartbl_summary An object of class \code{summary.npartbl}
 #'
 #' @method print summary.npartbl
 #' @export
-print.summary.npartbl <- function(npartbl) {
-  stopifnot(inherits(npartbl, "summary.npartbl"))
+print.summary.npartbl <- function(npartbl_summary) {
+  stopifnot(inherits(npartbl_summary, "summary.npartbl"))
   cat("MERLIN nonparametric.tbl\n",
       "--------------------------\n",
-      "Chromosome number: ", npartbl$chrom, "\n",
-      "Chromosome range: ",
-      npartbl$pos_range["min_pos"], "cM - ", npartbl$pos_range["max_pos"], "cM\n",
-      "Number of markers: ", npartbl$n_markers, "\n",
-      "MERLIN nonparametric options used:\n", sep = "")
-  print(npartbl$merlin_options)
+      "Number of markers per chromosome:\n", sep = "")
+  print(as.data.frame(npartbl_summary$n_markers))
+  cat("MERLIN options used:\n", sep = "")
+  print(npartbl_summary$merlin_options)
+  cat("Maximum LOD scores per chromosome:\n", sep = "")
+  print(as.data.frame(npartbl_summary$max_lods))
+
 }

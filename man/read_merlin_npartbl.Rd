@@ -4,7 +4,7 @@
 \alias{read_merlin_npartbl}
 \title{Read MERLIN \code{fam_nonparametric.tbl}}
 \usage{
-read_merlin_npartbl(fname)
+read_merlin_npartbl(fname, verbose = TRUE)
 }
 \arguments{
 \item{fname}{The file name to read.}

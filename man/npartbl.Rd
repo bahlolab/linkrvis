@@ -4,44 +4,46 @@
 \alias{npartbl}
 \title{MERLIN \code{npartbl} Object}
 \usage{
-npartbl(npartbl)
+npartbl(fname)
 }
 \arguments{
-\item{npartbl}{The name of a \code{fam_nonparametric.tbl}
-file output by MERLIN}
+\item{fname}{Character vector containing the \code{nonparametric.tbl} file name(s)
+output by MERLIN.}
 }
 \value{
 S3 object of class \code{npartbl}, which is
 a list with:
 \itemize{
-  \item npartbl: data.frame with 4 or 5* columns (chr, pos, analysis, lod, exlod*)
-  \item chrom: character vector of length 1
-  \item n_markers: character vector of length 1
+  \item npartbl: data.frame with 4 or 5* columns
+        (chr, pos, analysis, lod, exlod*)
+  \item max_lods: data.frame with 3 columns
+        (chr, max_lod, max_hlod)
+  \item n_markers: data.frame with 2 columns
+        (chr, n)
   \item merlin_options: character vector of length 3, indicating
   the options inferred to have been supplied to MERLIN for the nonparametric
   linkage analysis
-  \item pos_range: numeric vector of length 2 giving range of pos column
   }
 }
 \description{
 Returns an S3 object of class \code{npartbl} which is basically
-a cleaner version of MERLIN's \code{fam_nonparametric.tbl} file.
+a compact version of MERLIN's \code{fam_nonparametric.tbl} files.
 }
 \details{
 MERLIN's \code{--tabulate} option is used to output convenient tables
-summarising linkage analysis results in two files:
-\code{fam_parametric.tbl} and \code{fam_nonparametric.tbl}.
+summarising linkage analysis results in two files per chromosome:
+\code{chrA_parametric.tbl} and \code{chrA_nonparametric.tbl}.
 
-The \code{fam_nonparametric.tbl} file will be output if MERLIN is run with
+The \code{nonparametric.tbl} file will be output if MERLIN is run with
 at least one of the options \code{--npl} or \code{--pairs}.
 These compute a LOD score using the Kong and Cox linear model, which is found
-in the 'LOD' column. The two options are
-designated in the 'ANALYSIS' column of the file by character strings containing
+in the 'lod' column. The two options are
+designated in the 'analysis' column of the file by character strings containing
 'ALL' and 'pairs', respectively.
 
 If the \code{--exp} option is also specified,
 an additional LOD score is calculated using the
-Kong and Cox exponential mode. This is found in the 'ExLOD' column.
+Kong and Cox exponential mode. This is found in the 'exlod' column.
 
 If the family consists of a single affected sibpair, the 'ALL' and 'pairs'
 statistics will be identical. The 'pairs' statistic also considers sharing
@@ -49,7 +51,9 @@ within inbred individuals. For more information, see MERLIN's website:
 \url{http://csg.sph.umich.edu/abecasis/merlin/index.html}
 }
 \examples{
-npartbl_obj <- npartbl("merlin_10_famA-nonparametric.tbl")
+npartbl_chr9 <- npartbl("chr9-nonparametric.tbl")
+npartbl_chr24 <- npartbl(c("chr2-parametric.tbl", "chr4-nonparametric.tbl"))
+npartbl_all <- npartbl(list.files(path = "merlin/", pattern = "-nonparametric.tbl"))
 
 }
 

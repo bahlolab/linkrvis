@@ -9,7 +9,8 @@
 #'
 #' @examples read_merlin_partbl("merlin_chr13-parametric.tbl")
 read_merlin_partbl <- function(fname, verbose = TRUE) {
-  partbl <- read.table(fname, header = TRUE, comment.char = "", stringsAsFactors = FALSE)
+  partbl <- read.table(fname, header = TRUE, comment.char = "",
+                       stringsAsFactors = FALSE)
   names(partbl) <- tolower(names(partbl))
   required_cols <- c("chr", "pos", "label", "model", "lod", "alpha", "hlod")
   stopifnot(all(required_cols == names(partbl)))
@@ -56,8 +57,35 @@ read_merlin_partbl <- function(fname, verbose = TRUE) {
 #' @export
 #'
 #' @examples read_merlin_npartbl("merlin_13_famA-nonparametric.tbl")
-read_merlin_npartbl <- function(fname) {
-  read.table(fname, header = TRUE, comment.char = "n", sep = "\t", stringsAsFactors = FALSE)
+read_merlin_npartbl <- function(fname, verbose = TRUE) {
+  npartbl <- read.table(fname, header = TRUE, comment.char = "n",
+                        sep = "\t", stringsAsFactors = FALSE)
+  names(npartbl) <- tolower(names(npartbl))
+  required_cols <- c("chr", "pos", "analysis", "lod")
+  stopifnot(all(required_cols %in% names(npartbl)))
+  if (nrow(npartbl) > 0) {
+    chrom <- unique(npartbl$chr)
+    stopifnot(length(chrom) == 1, chrom %in% 1:23)
+    # Check that all = pairs
+    atab <- table(npartbl[["analysis"]])
+    # if two counts, should be same
+    stopifnot(length(atab) %in% c(1, 2),
+              abs(max(atab) - min(atab)) < 0.001)
+  } else {
+    if (verbose) {
+      message("'", fname, "'\n",
+              "is empty. It is probably for chrX and MERLIN didn't output\n",
+              "LOD scores for it since it was extremely unlikely to contain\n",
+              "the disease-causing mutation under the selected genetic model.\n",
+              "Returning a 0-row data.frame. This won't be shown in a plot.")
+    }
+  }
+  if ("exlod" %in% names(npartbl)) {
+    required_cols <- c(required_cols, "exlod")
+  }
+  npartbl <- npartbl[required_cols]
+  npartbl
+
 }
 
 

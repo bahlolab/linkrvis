@@ -4,8 +4,8 @@
 \alias{plot.partbl}
 \title{Plot MERLIN Parametric LOD Scores}
 \usage{
-\method{plot}{partbl}(partbl, vars = c("lod", "alpha", "hlod"),
-  threshold = max(partbl$max_lods[c("max_lod", "max_hlod")]))
+\method{plot}{partbl}(partbl, vars = c("lod", "alpha", "hlod"), ylim = c(0,
+  max(partbl$max_lods[c("max_lod", "max_hlod")])))
 }
 \arguments{
 \item{partbl}{An object of class \code{partbl}.}

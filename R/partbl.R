@@ -113,7 +113,7 @@ summary.partbl <- function(partbl) {
 
 #' Print Summary of \code{partbl} Object
 #'
-#' @param partbl An object of class \code{summary.partbl}
+#' @param partbl_summary An object of class \code{summary.partbl}
 #'
 #' @method print summary.partbl
 #' @export

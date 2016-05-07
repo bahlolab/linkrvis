@@ -24,9 +24,10 @@
 #'         \itemize{
 #'           \item partbl: data.frame with 6 columns
 #'                (chr, pos, model, lod, alpha, hlod)
-#'           \item summary_partbl: data.frame with 5 columns
-#'                (fname, chr, n_markers, gen_model, pos_range, max_lod, max_hlod)
-#'   }
+#'           \item max_lods: data.frame with 3 columns
+#'                (chr, max_lod, max_hlod)
+#'           \item n_markers: data.frame with 2 columns
+#'                (chr, n) }
 #'
 #' @examples
 #' partbl_chr9 <- partbl("chr9-parametric.tbl")
@@ -39,14 +40,16 @@
 partbl <- function(fname) {
   stopifnot(!missing(fname), is.character(fname))
   DF_list <- lapply(fname, read_merlin_partbl)
-  partbl <- dplyr::bind_rows(DF_list)
+  partbl <- dplyr::bind_rows(DF_list) %>%
+    dplyr::arrange_(~chr)
 
   # At this stage we have a data.frame with chr-pos-model-lod-alpha-hlod
   max_lods <- partbl %>%
     dplyr::group_by_(~chr) %>%
-    dplyr::summarise_each_(funs(max), c(max_lod = "lod", max_hlod = "hlod"))
+    dplyr::summarise_(max_lod = ~max(lod),
+                      max_hlod = ~max(hlod))
 
-  n_markers <- partbl %>% dplyr::count_(~chr)
+  n_markers <- partbl %>% dplyr::count_(~ chr)
 
   structure(list(partbl = partbl,
                  n_markers = n_markers,

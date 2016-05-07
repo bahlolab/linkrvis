@@ -15,9 +15,10 @@ S3 object of class \code{partbl}, which is a list with:
         \itemize{
           \item partbl: data.frame with 6 columns
                (chr, pos, model, lod, alpha, hlod)
-          \item summary_partbl: data.frame with 5 columns
-               (fname, chr, n_markers, gen_model, pos_range, max_lod, max_hlod)
-  }
+          \item max_lods: data.frame with 3 columns
+               (chr, max_lod, max_hlod)
+          \item n_markers: data.frame with 2 columns
+               (chr, n) }
 }
 \description{
 Returns an S3 object of class \code{partbl} which is basically

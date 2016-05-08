@@ -1,4 +1,4 @@
-#' Plot MERLIN Parametric LOD Scores
+#' Plot MERLIN Parametric Joint LOD Scores
 #'
 #' Plots the LOD, ALPHA and HLOD scores in MERLIN's \code{parametric.tbl} file
 #'

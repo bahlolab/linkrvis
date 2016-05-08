@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_partbl.R
 \name{plot.partbl}
 \alias{plot.partbl}
-\title{Plot MERLIN Parametric LOD Scores}
+\title{Plot MERLIN Parametric Joint LOD Scores}
 \usage{
 \method{plot}{partbl}(partbl, vars = c("lod", "alpha", "hlod"), ylim = c(0,
   max(partbl$max_lods[c("max_lod", "max_hlod")])))

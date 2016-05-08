@@ -3,11 +3,13 @@
 #' Read the \code{parametric.tbl} file output by MERLIN.
 #'
 #' @param fname The file name to read.
+#' @param verbose Display warning message for chr23.
 #'
-#' @return A \code{data.frame} with the columns
-#' @export
+#' @return A \code{data.frame} with the columns chr, pos, model, lod, alpha, hlod.
 #'
 #' @examples read_merlin_partbl("merlin_chr13-parametric.tbl")
+#'
+#' @export
 read_merlin_partbl <- function(fname, verbose = TRUE) {
   partbl <- read.table(fname, header = TRUE, comment.char = "",
                        stringsAsFactors = FALSE)
@@ -69,7 +71,8 @@ read_merlin_partbl <- function(fname, verbose = TRUE) {
 #'           \item max_lods: data.frame with 3 columns
 #'                (chr, max_lod, max_hlod)
 #'           \item n_markers: data.frame with 2 columns
-#'                (chr, n) }
+#'                (chr, n)
+#'                }
 #'
 #' @examples
 #' partbl_chr9 <- partbl("chr9-parametric.tbl")

@@ -14,6 +14,3 @@ npar <- linkrvis::npartbl(npar_fnames)
 print(npar)
 summary(npar)
 plot(npar)
-
-vars <- c("lod", "exlod")
-

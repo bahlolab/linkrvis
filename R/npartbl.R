@@ -10,8 +10,9 @@
 #' contain an 'n' character. This is a bit hacky, but it should always work.
 #'
 #' @param fname The file name to read.
+#' @param verbose Display warning message for chr23.
 #'
-#' @return A \code{data.frame}.
+#' @return A \code{data.frame} with the columns chr, pos, analysis, lod and exlod.
 #' @export
 #'
 #' @examples read_merlin_npartbl("merlin_13_famA-nonparametric.tbl")

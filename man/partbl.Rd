@@ -18,7 +18,8 @@ S3 object of class \code{partbl}, which is a list with:
           \item max_lods: data.frame with 3 columns
                (chr, max_lod, max_hlod)
           \item n_markers: data.frame with 2 columns
-               (chr, n) }
+               (chr, n)
+               }
 }
 \description{
 Returns an S3 object of class \code{partbl} which is basically

@@ -7,7 +7,7 @@
 partbl2ggdata(partbl, vars = c("lod", "alpha", "hlod"))
 }
 \arguments{
-\item{partbl}{An object of class \code{partbl} or a list of \code{partbl} objects.}
+\item{partbl}{S3 object of class \code{partbl}.}
 
 \item{vars}{A character vector indicating which variable(s) to plot. Available
 variables from the \code{partbl} file are: "lod", "alpha" and "hlod".}

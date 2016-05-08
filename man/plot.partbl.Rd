@@ -8,18 +8,18 @@
   max(partbl$max_lods[c("max_lod", "max_hlod")])))
 }
 \arguments{
-\item{partbl}{An object of class \code{partbl}.}
+\item{partbl}{S3 object of class \code{partbl}.}
 
-\item{vars}{A character vector indicating which variable(s) to plot. Available
-variables from the \code{partbl} file are: "lod", "alpha" and "hlod".}
+\item{vars}{Character vector indicating which variable(s) to plot. Available
+variables from the \code{partbl} data.frame are: "lod", "alpha" and "hlod".}
 
-\item{threshold}{Numeric of length one. Only plot values above or equal to this.}
+\item{ylim}{Character vector of length 2 indicating the range of values to plot.}
 }
 \value{
-A ggplot object, plotting the selected variables
+ggplot object, plotting the selected variables
 }
 \description{
-Plots the LOD, ALPHA and HLOD scores in MERLIN's \code{famA-parametric.tbl} file
+Plots the LOD, ALPHA and HLOD scores in MERLIN's \code{parametric.tbl} file
 }
 \examples{
 pt <- partbl("foo-parametric.tbl")

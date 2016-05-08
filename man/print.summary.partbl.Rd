@@ -7,7 +7,7 @@
 \method{print}{summary.partbl}(partbl_summary)
 }
 \arguments{
-\item{partbl}{An object of class \code{summary.partbl}}
+\item{partbl_summary}{An object of class \code{summary.partbl}}
 }
 \description{
 Print Summary of \code{partbl} Object

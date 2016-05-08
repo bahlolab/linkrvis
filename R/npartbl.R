@@ -1,3 +1,51 @@
+#' Read MERLIN \code{nonparametric.tbl}
+#'
+#' Read the \code{nonparametric.tbl} file output by MERLIN
+#'
+#' The \code{fam_nonparametric.tbl} file contains two rows at the
+#' beginning of each 'all' and/or 'pairs' subtable, which
+#' indicate the maximum possible scores for the specific dataset.
+#' These rows are ignored by using the comment.char = "n"
+#' option in \code{\link{read.table}}, which works since only these rows
+#' contain an 'n' character. This is a bit hacky, but it should always work.
+#'
+#' @param fname The file name to read.
+#'
+#' @return A \code{data.frame}.
+#' @export
+#'
+#' @examples read_merlin_npartbl("merlin_13_famA-nonparametric.tbl")
+read_merlin_npartbl <- function(fname, verbose = TRUE) {
+  npartbl <- read.table(fname, header = TRUE, comment.char = "n",
+                        sep = "\t", stringsAsFactors = FALSE)
+  names(npartbl) <- tolower(names(npartbl))
+  required_cols <- c("chr", "pos", "analysis", "lod")
+  stopifnot(all(required_cols %in% names(npartbl)))
+  if (nrow(npartbl) > 0) {
+    chrom <- unique(npartbl$chr)
+    stopifnot(length(chrom) == 1, chrom %in% 1:23)
+    # Check that all = pairs
+    atab <- table(npartbl[["analysis"]])
+    # if two counts, should be same
+    stopifnot(length(atab) %in% c(1, 2),
+              abs(max(atab) - min(atab)) < 0.001)
+  } else {
+    if (verbose) {
+      message("'", fname, "'\n",
+              "is empty. It is probably for chrX and MERLIN didn't output\n",
+              "LOD scores for it since it was extremely unlikely to contain\n",
+              "the disease-causing mutation under the selected genetic model.\n",
+              "Returning a 0-row data.frame. This won't be shown in a plot.")
+    }
+  }
+  if ("exlod" %in% names(npartbl)) {
+    required_cols <- c(required_cols, "exlod")
+  }
+  npartbl <- npartbl[required_cols]
+  npartbl
+
+}
+
 #' MERLIN \code{npartbl} Object
 #'
 #' Returns an S3 object of class \code{npartbl} which is basically

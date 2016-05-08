@@ -4,10 +4,10 @@
 \alias{print.summary.npartbl}
 \title{Print Summary of \code{npartbl} Object}
 \usage{
-\method{print}{summary.npartbl}(npartbl)
+\method{print}{summary.npartbl}(npartbl_summary)
 }
 \arguments{
-\item{npartbl}{An object of class \code{summary.npartbl}}
+\item{npartbl_summary}{An object of class \code{summary.npartbl}}
 }
 \description{
 Print Summary of \code{npartbl} Object

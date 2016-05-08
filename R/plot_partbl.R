@@ -1,13 +1,12 @@
 #' Plot MERLIN Parametric LOD Scores
 #'
-#' Plots the LOD, ALPHA and HLOD scores in MERLIN's \code{famA-parametric.tbl} file
+#' Plots the LOD, ALPHA and HLOD scores in MERLIN's \code{parametric.tbl} file
 #'
-#' @param partbl An object of class \code{partbl}.
-#' @param vars A character vector indicating which variable(s) to plot. Available
-#'        variables from the \code{partbl} file are: "lod", "alpha" and "hlod".
-#' @param threshold Numeric of length one. Only plot values above or equal to this.
-#'
-#' @return A ggplot object, plotting the selected variables
+#' @param partbl S3 object of class \code{partbl}.
+#' @param vars Character vector indicating which variable(s) to plot. Available
+#'        variables from the \code{partbl} data.frame are: "lod", "alpha" and "hlod".
+#' @param ylim Character vector of length 2 indicating the range of values to plot.
+#' @return ggplot object, plotting the selected variables
 #'
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 aes_
@@ -51,7 +50,7 @@ plot.partbl <- function(partbl, vars = c("lod", "alpha", "hlod"),
 
 #' \code{partbl} GG Data Preparation
 #'
-#' @param partbl An object of class \code{partbl} or a list of \code{partbl} objects.
+#' @param partbl S3 object of class \code{partbl}.
 #' @param vars A character vector indicating which variable(s) to plot. Available
 #'        variables from the \code{partbl} file are: "lod", "alpha" and "hlod".
 #'

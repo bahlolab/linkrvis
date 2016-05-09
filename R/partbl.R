@@ -102,22 +102,6 @@ partbl <- function(fname) {
             class = "partbl")
 }
 
-#' Get \code{partbl} Table
-#'
-#' @param partbl An object of class \code{partbl}.
-#'
-#' @return A data.frame with the chromosome, position, model,
-#' lod, alpha and hlod columns from a \code{partbl} object.
-#'
-#' @examples
-#' get_partbl(partbl("fam_parametric.tbl"))
-#'
-#' @export
-get_partbl <- function(partbl) {
-  stopifnot(inherits(partbl, "partbl"))
-  partbl$partbl
-}
-
 
 #' Print Head and Tail of \code{partbl} Table
 #'
@@ -134,7 +118,7 @@ print.partbl <- function(partbl, n = 6L) {
     stop(paste("Giving an n of", n, "will clutter your screen.",
                "Use n lower than 100."))
   }
-  tbl <- get_partbl(partbl)
+  tbl <- partbl$partbl
   print(head(tbl, n = n))
   cat("--------\n")
   print(tail(tbl))

@@ -92,3 +92,58 @@ fampar <- function(fname) {
                  max_lods = max_lods),
             class = "fampar")
 }
+
+#' Print Head and Tail of \code{fampar} Table
+#'
+#' Prints the head and tail of a \code{fampar} table.
+#'
+#' @param fampar An object of class \code{fampar}.
+#' @param n Number of rows to show in the head and tail
+#'
+#' @export
+print.fampar <- function(fampar, n = 6L) {
+  stopifnot(inherits(fampar, "fampar"))
+  stopifnot(length(n) == 1L, is.numeric(n), n > 0)
+  if (n > 100L) {
+    stop(paste("Giving an n of", n, "will clutter your screen.",
+               "Use n lower than 100."))
+  }
+  tbl <- fampar$fampar
+  print(head(tbl, n = n))
+  cat("--------\n")
+  print(tail(tbl))
+}
+
+#' Return Summary of \code{fampar} Object
+#'
+#' @param fampar An object of class \code{fampar}.
+#'
+#' @return A list (of class \code{summary.fampar}) containing summary
+#' information about the \code{fampar} object.
+#'
+#' @export
+summary.fampar <- function(fampar) {
+  stopifnot(inherits(fampar, "fampar"))
+  structure(list(n_markers = fampar$n_markers,
+                 families = unique(fampar$fampar$family),
+                 max_lods = fampar$max_lods),
+            class = "summary.fampar")
+}
+
+#' Print Summary of \code{fampar} Object
+#'
+#' @param fampar_summary An object of class \code{summary.fampar}
+#'
+#' @method print summary.fampar
+#' @export
+print.summary.fampar <- function(fampar_summary) {
+  stopifnot(inherits(fampar_summary, "summary.fampar"))
+  cat("MERLIN fam.par\n",
+      "--------------------------\n", sep = "")
+  cat("Families included in the pedigree:\n", sep = "")
+  print(fampar_summary$families)
+  cat("Number of markers per chromosome:\n", sep = "")
+  print(as.data.frame(fampar_summary$n_markers))
+  cat("Maximum LOD scores per chromosome per family:\n", sep = "")
+  print(as.data.frame(fampar_summary$max_lods))
+}

@@ -147,22 +147,6 @@ npartbl <- function(fname) {
             class = "npartbl")
 }
 
-#' Get \code{npartbl} Table
-#'
-#' @param npartbl An object of class \code{npartbl}.
-#'
-#' @return A data.frame with the chromosome, position, analysis,
-#' lod and exlod columns from a \code{npartbl} object.
-#'
-#' @examples
-#' get_npartbl(npartbl("fam_nonparametric.tbl"))
-#'
-#' @export
-get_npartbl <- function(npartbl) {
-  stopifnot(inherits(npartbl, "npartbl"))
-  npartbl$npartbl
-}
-
 
 #' Print Head, Middle and Tail of \code{npartbl} Table
 #'
@@ -179,7 +163,7 @@ print.npartbl <- function(npartbl, n = 6L) {
     stop(paste("Giving an n of", n, "will clutter your screen.",
                "Use n lower than 100."))
   }
-  tbl <- get_npartbl(npartbl)
+  tbl <- npartbl$npartbl
   print(head(tbl, n = n))
   cat("--------\n")
   print(tail(tbl, n = n))

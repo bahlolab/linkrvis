@@ -11,6 +11,6 @@ plot(fampar)
 # Multi
 fnames <- list.files(data_path, pattern = "par$", full.names = TRUE)
 fampar <- linkrvis::fampar(fnames)
-print(npar)
-summary(npar)
+print(fampar)
+summary(fampar)
 plot(fampar)

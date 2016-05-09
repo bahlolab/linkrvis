@@ -11,7 +11,7 @@
 #' @return A \code{data.frame} with the columns
 #' @export
 #'
-#' @examples read_merlin_partbl("merlin_chr13-parametric.tbl")
+#' @examples read_merlin_fampar("merlin_13_famA.par")
 read_merlin_fampar <- function(fname,
                                chrom = as.numeric(sub(".*merlin_(\\d{1,2})_.*", "\\1", fname)),
                                verbose = TRUE) {
@@ -54,10 +54,10 @@ read_merlin_fampar <- function(fname,
 #' @param fname Character vector containing the \code{fam.par} file name(s)
 #' output by MERLIN.
 #'
-#' @return S3 object of class \code{partbl}, which is a list with:
+#' @return S3 object of class \code{fampar}, which is a list with:
 #'         \itemize{
 #'           \item fampar: data.frame with 5 columns
-#'                (chr, model, family, position, lod)
+#'                (chr, family, position, lod, model)
 #'           \item max_lods: data.frame with 3 columns
 #'                (chr, family, max_lod)
 #'           \item n_markers: data.frame with 2 columns

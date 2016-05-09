@@ -23,6 +23,6 @@ A \code{data.frame} with the columns
 Read the \code{.par} file output by MERLIN.
 }
 \examples{
-read_merlin_partbl("merlin_chr13-parametric.tbl")
+read_merlin_fampar("merlin_13_famA.par")
 }
 

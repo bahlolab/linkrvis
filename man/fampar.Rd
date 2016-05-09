@@ -11,10 +11,10 @@ fampar(fname)
 output by MERLIN.}
 }
 \value{
-S3 object of class \code{partbl}, which is a list with:
+S3 object of class \code{fampar}, which is a list with:
         \itemize{
           \item fampar: data.frame with 5 columns
-               (chr, model, family, position, lod)
+               (chr, family, position, lod, model)
           \item max_lods: data.frame with 3 columns
                (chr, family, max_lod)
           \item n_markers: data.frame with 2 columns

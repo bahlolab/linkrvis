@@ -63,7 +63,6 @@ plot.partbl <- function(partbl, vars = c("lod", "alpha", "hlod"),
 #' pt_ggdata <- partbl2ggdata(pt)
 #' head(pt_ggdata)
 #'
-#' @export
 partbl2ggdata <- function(partbl, vars = c("lod", "alpha", "hlod")) {
   stopifnot(inherits(partbl, c("partbl")),
             vars %in% c("lod", "alpha", "hlod"))

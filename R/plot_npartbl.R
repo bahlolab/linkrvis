@@ -65,7 +65,6 @@ plot.npartbl <- function(npartbl, vars = c("lod", "exlod"),
 #' npt_ggdata <- npartbl2ggdata(pt)
 #' head(npt_ggdata)
 #'
-#' @export
 npartbl2ggdata <- function(npartbl, vars = c("lod", "exlod")) {
   stopifnot(inherits(npartbl, c("npartbl")),
             vars %in% c("lod", "exlod"))

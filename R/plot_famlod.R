@@ -34,10 +34,10 @@ plot.famlod <- function(famlod,
       panel.margin.x = ggplot2::unit(0.02, "lines"),
       # strip.background = ggplot2::element_blank(),
       # strip.text.y = ggplot2::element_blank(),
-      axis.ticks = ggplot2::element_blank(),
+      # axis.ticks = ggplot2::element_blank(),
       panel.grid.major.x = ggplot2::element_blank(),
       panel.grid.minor.x = ggplot2::element_blank(),
-      axis.text.x = ggplot2::element_blank(),
+      # axis.text.x = ggplot2::element_blank(),
       panel.border = ggplot2::element_rect(fill = NA, colour = "white", linetype = "dashed"),
       panel.background = ggplot2::element_rect(fill = 'grey95'))
   p + coord_cartesian(ylim = ylim)

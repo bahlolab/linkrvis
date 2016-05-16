@@ -24,7 +24,7 @@ read_merlin_npartbl <- function(fname, verbose = TRUE) {
   stopifnot(all(required_cols %in% names(npartbl)))
   if (nrow(npartbl) > 0) {
     chrom <- unique(npartbl$chr)
-    stopifnot(length(chrom) == 1, chrom %in% 1:23)
+    stopifnot(length(chrom) == 1, chrom %in% c(1:23, 999))
     # Check that all = pairs
     atab <- table(npartbl[["analysis"]])
     # if two counts, should be same

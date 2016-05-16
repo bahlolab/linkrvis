@@ -16,6 +16,8 @@
 #'         returns NULL.
 #'
 #' @examples
+#' get_peaks(df)
+#'
 #' @export
 get_peaks <- function(DF, vcol, threshold = 0, width = 1) {
   stopifnot(is.data.frame(DF), nrow(DF) > 0)

@@ -18,7 +18,7 @@ read_merlin_partbl <- function(fname, verbose = TRUE) {
   stopifnot(all(required_cols == names(partbl)))
   if (nrow(partbl) > 0) {
     chrom <- unique(partbl$chr)
-    stopifnot(length(chrom) == 1, chrom %in% 1:23)
+    stopifnot(length(chrom) == 1, chrom %in% c(1:23, 999))
     gen_model <- unique(partbl$model)
     if (length(gen_model) != 1) {
       stop("You have probably specified more than one model in MERLIN's ",

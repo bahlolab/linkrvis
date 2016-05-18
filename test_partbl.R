@@ -9,7 +9,7 @@ par <- linkrvis::partbl(file.path(data_path, "merlin_3_barwon_asd46-parametric.t
 print(par)
 summary(par)
 plot(par, c("lod", "hlod"))+
-  geom_vline(xintercept = 106.74, linetype="dotted")
+  ggplot2::geom_vline(xintercept = 106.74, linetype="dotted")
 plot(par, c("alpha"), c(0, 1))
 
 
@@ -19,6 +19,6 @@ par <- linkrvis::partbl(par_fnames)
 print(par)
 summary(par)
 plot(par, c("lod", "hlod")) +
-  theme(axis.text.x = ggplot2::element_blank(),
+  ggplot2::theme(axis.text.x = ggplot2::element_blank(),
         axis.ticks = ggplot2::element_blank())
 plot(par, c("alpha"), c(0, 1))

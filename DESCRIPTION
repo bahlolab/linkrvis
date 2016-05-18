@@ -13,5 +13,6 @@ Depends:
 Imports:
     dplyr,
     ggplot2,
+    plyr,
     tidyr,
 RoxygenNote: 5.0.1

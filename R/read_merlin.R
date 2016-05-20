@@ -60,3 +60,27 @@ read_merlin_ped <- function(fname) {
   ped <- read.table(fname, header = FALSE, stringsAsFactors = FALSE)
   as.matrix(ped)
 }
+
+
+#' Read HapMap2 Annotation File
+#'
+#' Read the LINKDATAGEN annotation file for MPS and Illumina SNP chip data
+#' (rev.807 Dec2013), and select only the chr, bp and cm columns.
+#' Based on the b37 build.
+#'
+#' @param fname The file name to read.
+#'
+#' @return data.frame with 4,031,388 rows and 3 columns: chrom (char), bp (int)
+#'         and cm (double)
+#'
+#' @examples
+#' annot <- read_annot("annotHapMap2U.txt.gz")
+#'
+#' @export
+read_annot <- function(fname) {
+  readr::read_tsv(fname, comment = "#",
+                  col_types = readr::cols_only(
+                    Chrom = "c",
+                    physical_position_build37 = "i",
+                    deCODE_genetic_map_position = "d"))
+}

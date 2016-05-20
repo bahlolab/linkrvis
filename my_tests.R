@@ -27,3 +27,6 @@ famlod_peaks <- linkrvis::get_peaks(famlod)
 fampar_peaks <- linkrvis::get_peaks(fampar)
 
 
+## cm_to_bp
+annot <- linkrvis::read_annot("~/Desktop/annotHapMap2U.txt.gz")
+saveRDS(annot, "~/Desktop/annotHapMap2U.rds")

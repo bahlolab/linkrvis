@@ -26,7 +26,7 @@ plot.fampar <- function(fampar,
   stopifnot(inherits(fampar, "fampar"))
   stopifnot(is.numeric(ylim), length(ylim) == 2)
   p <- fampar$fampar %>%
-    ggplot(ggplot2::aes_(x = ~position, y = ~lod, colour = ~family)) +
+    ggplot(ggplot2::aes_(x = ~pos, y = ~lod, colour = ~family)) +
     geom_line()
   p <- p + facet_grid(family ~ chr, scales = "free_y") +
     theme(

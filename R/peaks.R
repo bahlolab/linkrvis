@@ -13,8 +13,6 @@
 #'        that make sense as 'position' and 'value'.
 #' @param valcol A length-one character vector giving the name of the column in
 #'        \code{d} containing the values.
-#' @param poscol A length-one character vector giving the name of the column in
-#'        \code{d} containing the positions.
 #' @param t A length-one numeric vector specifying the threshold to be used.
 #'
 #' @return A list where each element is a data.frame containing subsets of \code{d}
@@ -24,10 +22,10 @@
 #'
 #' @examples
 #' partbl <- partbl::partbl("merlin_10_famA-parametric.tbl")
-#' get_peaks(partbl$partbl, "lod")
+#' get_peaks(partbl)
 #'
 #' @export
-get_peaks <- function(d, valcol = "lod", poscol = "pos", t = 0) {
+get_peaks <- function(d, valcol = "lod", t = 0) {
   if (inherits(d, "partbl")) {
     d <- d$partbl
     split_by <- c("chr")
@@ -45,12 +43,11 @@ get_peaks <- function(d, valcol = "lod", poscol = "pos", t = 0) {
   stopifnot("chr" %in% names(d))
   stopifnot(is.numeric(t), length(t) == 1)
   stopifnot(is.character(valcol), length(valcol) == 1)
-  stopifnot(is.character(poscol), length(poscol) == 1)
-  stopifnot(all(c(valcol, poscol) %in% names(d)))
+  stopifnot(all(c(valcol, "pos") %in% names(d)))
   get_peaksPerChrom <- function(dchr) {
     stopifnot(is.data.frame(dchr),
               nrow(dchr) > 0,
-              !is.unsorted(dchr[[poscol]]))
+              !is.unsorted(dchr[["pos"]]))
 
     x <- rle(dchr[[valcol]] >= t)
     if (!any(x$values)) return(NULL)
@@ -63,11 +60,17 @@ get_peaks <- function(d, valcol = "lod", poscol = "pos", t = 0) {
       e <- end_ind[ind]
       telomeric <- c(if (s == 0) "start", if (e == n) "end")
       if (length(telomeric) == 0) telomeric <- "no"
-      s <- max(s, 1)
+      s <- max(s, 1) # covers for s of 0
       e <- min(e, n)
       structure(dchr[s:e, , drop = FALSE], rownames = NULL, telomeric = telomeric)
     })
     regions
   }
-  plyr::dlply(d, split_by, get_peaksPerChrom)
+  res <- plyr::dlply(d, split_by, get_peaksPerChrom)
+  res <- unlist(res, recursive = FALSE)
+  res
 }
+
+
+# summarise_peaks <- function() {
+# }

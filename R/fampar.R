@@ -20,6 +20,7 @@ read_merlin_fampar <- function(fname,
                        row.names = NULL, sep = "")
   names(fampar) <- tolower(names(fampar))
   stopifnot(all(c("model", "family", "position", "lod") %in% names(fampar)))
+  names(fampar)[names(fampar) == "position"] <- "pos"
 
   if (nrow(fampar) > 1) {
     fampar <- data.frame(chr = chrom, fampar, stringsAsFactors = FALSE)

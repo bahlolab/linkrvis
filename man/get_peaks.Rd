@@ -4,7 +4,7 @@
 \alias{get_peaks}
 \title{Output Rows with Values Above Threshold}
 \usage{
-get_peaks(d, valcol = "lod", poscol = "pos", t = 0)
+get_peaks(d, valcol = "lod", t = 0)
 }
 \arguments{
 \item{d}{An object of class \code{\link{partbl}}, \code{link{npartbl}},
@@ -14,9 +14,6 @@ that make sense as 'position' and 'value'.}
 
 \item{valcol}{A length-one character vector giving the name of the column in
 \code{d} containing the values.}
-
-\item{poscol}{A length-one character vector giving the name of the column in
-\code{d} containing the positions.}
 
 \item{t}{A length-one numeric vector specifying the threshold to be used.}
 }
@@ -37,7 +34,7 @@ containing the LOD scores per marker is used.
 }
 \examples{
 partbl <- partbl::partbl("merlin_10_famA-parametric.tbl")
-get_peaks(partbl$partbl, "lod")
+get_peaks(partbl)
 
 }
 

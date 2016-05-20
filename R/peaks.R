@@ -11,12 +11,13 @@
 #'        \code{link{famlod}} or \code{link{fampar}}.
 #'        Can also be a data.frame with two numeric columns
 #'        that make sense as 'position' and 'value'.
+#' @param t A length-one numeric vector specifying the threshold to be used.
 #' @param valcol A length-one character vector giving the name of the column in
 #'        \code{d} containing the values.
-#' @param t A length-one numeric vector specifying the threshold to be used.
 #'
-#' @return A list where each element is a data.frame containing subsets of \code{d}
-#'         where 'value' >= \code{t}. If no regions achieve the specified
+#' @return A data.frame where each row contains summary information
+#'         about contiguous regions in \code{d} where 'value' >= \code{t}.
+#'         If no regions achieve the specified
 #'         \code{t}, returns NULL.
 #'
 #' @examples
@@ -24,7 +25,7 @@
 #' get_peaks(partbl)
 #'
 #' @export
-get_peaks <- function(d, valcol = "lod", t = 0) {
+get_peaks <- function(d, t = 0, valcol = "lod") {
   if (inherits(d, "partbl")) {
     d <- d$partbl
     split_by <- c("chr")
@@ -58,9 +59,46 @@ get_peaks <- function(d, valcol = "lod", t = 0) {
 
   peaks <- unlist(plyr::dlply(d, split_by, get_peaksPerChrom),
                   recursive = FALSE, use.names = FALSE)
-  peaks
+  summarise_peaks(peaks, valcol)
 }
 
 
-# summarise_peaks <- function() {
-# }
+#' Summarise LOD score peaks
+#'
+#' Which regions achieve a LOD score above a given threshold?
+#'
+#' @param ld A list of data.frames containing markers achieving high LOD scores.
+#' @param valcol A length-one character vector giving the name of the column in
+#'        \code{d} containing the values.
+#'
+#' @return A data.frame with chr, start_cm, end_cm, etc.
+#'
+#' @importFrom dplyr %>%
+#'
+#' @examples
+#' partbl <- partbl::partbl("merlin_10_famA-parametric.tbl")
+#' list_of_peaks <- get_peaks(partbl)
+#' summarise_peaks(list_of_peaks)
+#'
+summarise_peaks <- function(ld, valcol) {
+  stopifnot(is.list(ld))
+  peak_summary <- lapply(ld, function(df) {
+    n <- nrow(df)
+    chr <- df$chr[1]
+    start_cm <- df$pos[1]
+    end_cm <- df$pos[n]
+    max_val <- round(max(df[[valcol]]), 2)
+    min_val <- round(min(df[[valcol]]), 2)
+    analysis <- ifelse("analysis" %in% names(df),
+                       paste0("npara_", df$analysis[1]),
+                       "para")
+    family <- ifelse("family" %in% names(df),
+                     df$family[1],
+                     "-")
+    data.frame(chr = chr, start_cm = start_cm, end_cm = end_cm,
+               tot_cm = end_cm - start_cm, max_val = max_val, min_val = min_val,
+               analysis = analysis, fam = family, stringsAsFactors = FALSE)
+  })
+  dplyr::bind_rows(peak_summary) %>%
+    arrange_(~fam, ~analysis, ~chr, ~start_cm, ~end_cm)
+}

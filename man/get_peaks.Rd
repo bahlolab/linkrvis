@@ -4,7 +4,7 @@
 \alias{get_peaks}
 \title{Output Rows with Values Above Threshold}
 \usage{
-get_peaks(d, valcol = "lod", t = 0)
+get_peaks(d, t = 0, valcol = "lod")
 }
 \arguments{
 \item{d}{An object of class \code{\link{partbl}}, \code{link{npartbl}},
@@ -12,14 +12,15 @@ get_peaks(d, valcol = "lod", t = 0)
 Can also be a data.frame with two numeric columns
 that make sense as 'position' and 'value'.}
 
+\item{t}{A length-one numeric vector specifying the threshold to be used.}
+
 \item{valcol}{A length-one character vector giving the name of the column in
 \code{d} containing the values.}
-
-\item{t}{A length-one numeric vector specifying the threshold to be used.}
 }
 \value{
-A list where each element is a data.frame containing subsets of \code{d}
-        where 'value' >= \code{t}. If no regions achieve the specified
+A data.frame where each row contains summary information
+        about contiguous regions in \code{d} where 'value' >= \code{t}.
+        If no regions achieve the specified
         \code{t}, returns NULL.
 }
 \description{

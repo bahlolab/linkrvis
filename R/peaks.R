@@ -16,8 +16,7 @@
 #' @param t A length-one numeric vector specifying the threshold to be used.
 #'
 #' @return A list where each element is a data.frame containing subsets of \code{d}
-#'         where 'value' >= \code{t}. If possible, one flanking row is included
-#'         on each side of the region. If no regions achieve the specified
+#'         where 'value' >= \code{t}. If no regions achieve the specified
 #'         \code{t}, returns NULL.
 #'
 #' @examples
@@ -44,31 +43,22 @@ get_peaks <- function(d, valcol = "lod", t = 0) {
   stopifnot(is.numeric(t), length(t) == 1)
   stopifnot(is.character(valcol), length(valcol) == 1)
   stopifnot(all(c(valcol, "pos") %in% names(d)))
+
+  # return a list of dfs where each chunk of consecutive rows has valcol >= t
   get_peaksPerChrom <- function(dchr) {
     stopifnot(is.data.frame(dchr),
               nrow(dchr) > 0,
               !is.unsorted(dchr[["pos"]]))
+    achieve_thresh <- dchr[[valcol]] >= t
+    if (!any(achieve_thresh)) return(NULL)
+    peak_list <- split(dchr[achieve_thresh, ],
+                         cumsum(!achieve_thresh)[achieve_thresh])
 
-    x <- rle(dchr[[valcol]] >= t)
-    if (!any(x$values)) return(NULL)
-    n <- nrow(dchr)
-    start_ind <- c(0, cumsum(x$lengths))[which(x$values)]
-    end_ind <- start_ind + x$lengths[x$values] + 1
-
-    regions <- lapply(seq_len(length(start_ind)), function(ind) {
-      s <- start_ind[ind]
-      e <- end_ind[ind]
-      telomeric <- c(if (s == 0) "start", if (e == n) "end")
-      if (length(telomeric) == 0) telomeric <- "no"
-      s <- max(s, 1) # covers for s of 0
-      e <- min(e, n)
-      structure(dchr[s:e, , drop = FALSE], rownames = NULL, telomeric = telomeric)
-    })
-    regions
   }
-  res <- plyr::dlply(d, split_by, get_peaksPerChrom)
-  res <- unlist(res, recursive = FALSE)
-  res
+
+  peaks <- unlist(plyr::dlply(d, split_by, get_peaksPerChrom),
+                  recursive = FALSE, use.names = FALSE)
+  peaks
 }
 
 

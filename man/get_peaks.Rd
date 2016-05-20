@@ -19,8 +19,7 @@ that make sense as 'position' and 'value'.}
 }
 \value{
 A list where each element is a data.frame containing subsets of \code{d}
-        where 'value' >= \code{t}. If possible, one flanking row is included
-        on each side of the region. If no regions achieve the specified
+        where 'value' >= \code{t}. If no regions achieve the specified
         \code{t}, returns NULL.
 }
 \description{

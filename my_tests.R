@@ -21,9 +21,9 @@ par <- partbl(par_fnames)
 npar <- npartbl(npar_fnames)
 famlod <- famlod(famlod_fnames)
 fampar <- fampar(fampar_fnames)
-par_peaks <- linkrvis::get_peaks(par, t = 4)
+par_peaks <- linkrvis::get_peaks(par)
 npar_peaks <- linkrvis::get_peaks(npar)
 famlod_peaks <- linkrvis::get_peaks(famlod)
-fampar_peaks <- linkrvis::get_peaks(fampar, poscol = "position")
+fampar_peaks <- linkrvis::get_peaks(fampar)
 
 

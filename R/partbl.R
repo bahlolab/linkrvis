@@ -19,6 +19,9 @@ read_merlin_partbl <- function(fname, verbose = TRUE) {
   if (nrow(partbl) > 0) {
     chrom <- unique(partbl$chr)
     stopifnot(length(chrom) == 1, chrom %in% c(1:23, 999))
+    if (chrom == 999) {
+      partbl$chr[partbl$chr == 999] <- 23
+    }
     gen_model <- unique(partbl$model)
     if (length(gen_model) != 1) {
       stop("You have probably specified more than one model in MERLIN's ",

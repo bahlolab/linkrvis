@@ -25,6 +25,9 @@ read_merlin_npartbl <- function(fname, verbose = TRUE) {
   if (nrow(npartbl) > 0) {
     chrom <- unique(npartbl$chr)
     stopifnot(length(chrom) == 1, chrom %in% c(1:23, 999))
+    if (chrom == 999) {
+      npartbl$chr[npartbl$chr == 999] <- 23
+    }
     # Check that all = pairs
     atab <- table(npartbl[["analysis"]])
     # if two counts, should be same

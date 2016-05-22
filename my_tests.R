@@ -1,8 +1,10 @@
 rm(list = ls())
 require(linkrvis)
 data_path <- "~/Desktop/c10orf2/merlin_output/joint_merlin"
+# data_path <- "~/Desktop/Barwon/analysis/linkr/femepl_merlin"
 
 # single
+# par <- partbl(file.path(data_path, "merlin_3_barwon_asd46-parametric.tbl"))
 par <- partbl(file.path(data_path, "merlin_10_c10orf_extended-parametric.tbl"))
 npar <- npartbl(file.path(data_path, "merlin_10_c10orf_extended-nonparametric.tbl"))
 famlod <- famlod(file.path(data_path, "merlin_10_c10orf_extended.lod"))
@@ -28,5 +30,16 @@ fampar_peaks <- linkrvis::get_peaks(fampar)
 
 
 ## cm_to_bp
-annot <- linkrvis::read_annot("~/Desktop/annotHapMap2U.txt.gz")
-saveRDS(annot, "~/Desktop/annotHapMap2U.rds")
+# annot <- linkrvis::read_annot("~/Desktop/annotHapMap2U.txt.gz")
+# saveRDS(annot, "~/Desktop/annotHapMap2U.rds")
+rm(list = ls())
+require(linkrvis)
+data_path <- "~/Desktop/c10orf2/merlin_output/joint_merlin"
+peaks <- get_peaks(partbl(
+  file.path(data_path, "merlin_10_c10orf_extended-parametric.tbl")))
+annot <- readRDS("~/Desktop/annotHapMap2U.rds")
+head(peaks)
+head(annot)
+
+cm2bp(peaks_chr = peaks, annot = annot)
+

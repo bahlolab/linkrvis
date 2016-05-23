@@ -95,12 +95,23 @@ summarise_peaks <- function(ld, valcol) {
     family <- ifelse("family" %in% names(df),
                      df$family[1],
                      "-")
-    data.frame(chr = chr, start_cm = start_cm, end_cm = end_cm,
-               tot_cm = end_cm - start_cm, max_val = max_val, min_val = min_val,
-               analysis = analysis, fam = family, stringsAsFactors = FALSE)
+
+    data.frame(fam = family, analysis = analysis,
+               chr = chr, start_cm = start_cm, end_cm = end_cm,
+               tot_cm = "-",
+               max_val = max_val, min_val = min_val,
+               stringsAsFactors = FALSE)
   })
-  dplyr::bind_rows(peak_summary) %>%
+  peaks <- dplyr::bind_rows(peak_summary) %>%
     dplyr::arrange_(~fam, ~analysis, ~chr, ~start_cm, ~end_cm)
+
+
+  e <- 0.00001
+  peaks$start_cm <- peaks$start_cm - (ifelse(peaks$start_cm - 0.0 < e, 0, 0.3))
+  peaks$end_cm <- peaks$end_cm + 0.3
+  peaks$tot_cm <- peaks$end_cm - peaks$start_cm
+  peaks
+
 }
 
 #' Convert centimorgan to bp

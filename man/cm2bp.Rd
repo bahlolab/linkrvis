@@ -4,22 +4,21 @@
 \alias{cm2bp}
 \title{Convert centimorgan to bp}
 \usage{
-cm2bp(peaks_chr, annot)
+cm2bp(peaks, annot)
 }
 \arguments{
-\item{peaks_chr}{A data.frame with chr, start_cm and end_cm information about
-a single chromosome.}
+\item{peaks}{A data.frame with chr, start_cm and end_cm information.}
 
 \item{annot}{A data.frame with chr, cm and bp columns.}
 }
 \value{
-The peaks_chr data.frame with the start_bp and end_bp columns inserted.
+The peaks data.frame with the start_bp and end_bp columns inserted.
 }
 \description{
 Converts genetic distance in centimorgans to genetic position in bp.
 }
 \examples{
-par <- partbl("merlin_10_famA-parametric.tbl")
+par <- partbl(list.files(pattern = "-parametric.tbl$")
 peaks <- peaks(par)
 annot <- read_annot("annotHapMap2U.txt")
 cm2bp(peaks, annot)

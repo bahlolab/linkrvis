@@ -107,95 +107,97 @@ summarise_peaks <- function(ld, valcol) {
 #'
 #' Converts genetic distance in centimorgans to genetic position in bp.
 #'
-#' @param peaks_chr A data.frame with chr, start_cm and end_cm information about
-#'        a single chromosome.
+#' @param peaks A data.frame with chr, start_cm and end_cm information.
 #' @param annot A data.frame with chr, cm and bp columns.
 #'
-#' @return The peaks_chr data.frame with the start_bp and end_bp columns inserted.
+#' @return The peaks data.frame with the start_bp and end_bp columns inserted.
 #'
 #' @examples
-#' par <- partbl("merlin_10_famA-parametric.tbl")
+#' par <- partbl(list.files(pattern = "-parametric.tbl$")
 #' peaks <- peaks(par)
 #' annot <- read_annot("annotHapMap2U.txt")
 #' cm2bp(peaks, annot)
 #'
 #' @export
-cm2bp <- function(peaks_chr, annot) {
-  stopifnot(is.data.frame(peaks_chr), nrow(peaks_chr) > 0)
+cm2bp <- function(peaks, annot) {
+  stopifnot(is.data.frame(peaks), nrow(peaks) > 0)
   stopifnot(is.data.frame(annot), nrow(annot) > 0)
   stopifnot(all(names(annot) == c("chr", "bp", "cm")))
-  stopifnot(all(c("chr", "start_cm", "end_cm") %in% names(peaks_chr)))
-  chr <- unique(peaks_chr$chr)
-  stopifnot(length(chr) == 1, chr %in% 1:23)
-  chr <- paste0("chr", chr)
-  # subset annot based on chr
-  annot <- annot[annot$chr == chr, ]
+  stopifnot(all(c("chr", "start_cm", "end_cm") %in% names(peaks)))
+  cm2bp_chr <- function(peaks_chr, annot){
+    chr <- unique(peaks_chr$chr)
+    stopifnot(length(chr) == 1, chr %in% 1:23)
+    chr <- paste0("chr", chr)
+    # subset annot based on chr
+    annot <- annot[annot$chr == chr, ]
 
-  start_bp <- c()
-  end_bp <- c()
-  min_diffs_start <- c()
-  min_diffs_end <- c()
-  peaks_start_cm <- peaks_chr$start_cm
-  peaks_end_cm <- peaks_chr$end_cm
+    start_bp <- c()
+    end_bp <- c()
+    min_diffs_start <- c()
+    min_diffs_end <- c()
+    peaks_start_cm <- peaks_chr$start_cm
+    peaks_end_cm <- peaks_chr$end_cm
 
-  # specify UCSC hg19 chromosome lengths for chr1-chr23
-  chr_len <- setNames(c(249250621, 243199373, 198022430, 191154276, 180915260,
-                        171115067, 159138663, 146364022, 141213431, 135534747,
-                        135006516, 133851895, 115169878, 107349540, 102531392,
-                        90354753, 81195210, 78077248, 59128983, 63025520,
-                        48129895, 51304566, 155270560),
-                      paste0("chr", seq_len(23)))
+    # specify UCSC hg19 chromosome lengths for chr1-chr23
+    chr_len <- setNames(c(249250621, 243199373, 198022430, 191154276, 180915260,
+                          171115067, 159138663, 146364022, 141213431, 135534747,
+                          135006516, 133851895, 115169878, 107349540, 102531392,
+                          90354753, 81195210, 78077248, 59128983, 63025520,
+                          48129895, 51304566, 155270560),
+                        paste0("chr", seq_len(23)))
 
 
-  for (pcm in peaks_start_cm) {
-    diffs <- annot$cm - pcm
-    # difference must be 0 or negative
-    m <- max(diffs[diffs <= 0])
-    idx <- which(diffs == m)
-    dat <- annot[idx, ]
-    if (nrow(dat) == 0) { # start of chr, return 1
-      start_bp <- c(start_bp, 1)
-    } else if (nrow(dat) == 1) { # only one closest match, return it
-      start_bp <- c(start_bp, dat$bp)
-    } else if (nrow(dat) > 1) { # multiple markers have the closest cM position
-      if (m == 0) {
-        # multiple exact cM matches, return match with lowest bp
-        start_bp <- c(start_bp, dat$bp[1])
+    for (pcm in peaks_start_cm) {
+      diffs <- annot$cm - pcm
+      # difference must be 0 or negative
+      m <- max(diffs[diffs <= 0])
+      idx <- which(diffs == m)
+      dat <- annot[idx, ]
+      if (nrow(dat) == 0) { # start of chr, return 1
+        start_bp <- c(start_bp, 1)
+      } else if (nrow(dat) == 1) { # only one closest match, return it
+        start_bp <- c(start_bp, dat$bp)
+      } else if (nrow(dat) > 1) { # multiple markers have the closest cM position
+        if (m == 0) {
+          # multiple exact cM matches, return match with lowest bp
+          start_bp <- c(start_bp, dat$bp[1])
+        } else {
+          # multiple closest markers with smaller cM values, so
+          # return one with highest bp
+          start_bp <- c(start_bp, dat$bp[nrow(dat)])
+        }
       } else {
-        # multiple closest markers with smaller cM values, so
-        # return one with highest bp
-        start_bp <- c(start_bp, dat$bp[nrow(dat)])
+        stop("This should never happen!!")
       }
-    } else {
-      stop("This should never happen!!")
-    }
-    min_diffs_start <- c(min_diffs_start, m)
-  } # for end
+      min_diffs_start <- c(min_diffs_start, m)
+    } # for end
 
-  for (pcm in peaks_end_cm) {
-    diffs <- annot$cm - pcm
-    # difference must be 0 or positive
-    m <- min(diffs[diffs >= 0])
-    idx <- which(diffs == m)
-    dat <- annot[idx, ]
-    if (nrow(dat) == 0) { # end of chr, return chr_len
-      end_bp <- c(end_bp, chr_len[chr])
-    } else if (nrow(dat) == 1) { # only one closest match, return it
-      end_bp <- c(end_bp, dat$bp)
-    } else if (nrow(dat) > 1) { # multiple markers have the closest cM position
-      if (m == 0) {
-        # multiple exact cM matches, return match with highest bp
-        end_bp <- c(end_bp, dat$bp[nrow])
+    for (pcm in peaks_end_cm) {
+      diffs <- annot$cm - pcm
+      # difference must be 0 or positive
+      m <- min(diffs[diffs >= 0])
+      idx <- which(diffs == m)
+      dat <- annot[idx, ]
+      if (nrow(dat) == 0) { # end of chr, return chr_len
+        end_bp <- c(end_bp, chr_len[chr])
+      } else if (nrow(dat) == 1) { # only one closest match, return it
+        end_bp <- c(end_bp, dat$bp)
+      } else if (nrow(dat) > 1) { # multiple markers have the closest cM position
+        if (m == 0) {
+          # multiple exact cM matches, return match with highest bp
+          end_bp <- c(end_bp, dat$bp[nrow])
+        } else {
+          # multiple closest markers with higher cM values, so
+          # return one with lowest bp
+          end_bp <- c(end_bp, dat$bp[1])
+        }
       } else {
-        # multiple closest markers with higher cM values, so
-        # return one with lowest bp
-        end_bp <- c(end_bp, dat$bp[1])
+        stop("This should never happen!!")
       }
-    } else {
-      stop("This should never happen!!")
-    }
-    min_diffs_end <- c(min_diffs_end, m)
-  } # for end
-  cbind(peaks_chr, start_bp = start_bp, end_bp = end_bp, tot_bp = end_bp - start_bp, min_diffs_start, min_diffs_end)
+      min_diffs_end <- c(min_diffs_end, m)
+    } # for end
+    cbind(peaks_chr, start_bp = start_bp, end_bp = end_bp, tot_bp = end_bp - start_bp, min_diffs_start, min_diffs_end)
+  } # inner func end
+  plyr::ddply(peaks, "chr", cm2bp_chr, annot)
 
 } # function end

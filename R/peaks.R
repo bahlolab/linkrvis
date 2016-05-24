@@ -104,7 +104,7 @@ summarise_peaks <- function(ld, valcol) {
     data.frame(fam = family, analysis = analysis,
                chr = chr, start_cm = start_cm, end_cm = end_cm,
                tot_cm = "-",
-               max_val = max_val, min_val = min_val,
+               val = valcol, max_val = max_val, min_val = min_val,
                stringsAsFactors = FALSE)
   })
   peaks <- dplyr::bind_rows(peak_summary) %>%

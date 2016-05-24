@@ -2,9 +2,9 @@
 % Please edit documentation in R/peaks.R
 \name{get_peaks}
 \alias{get_peaks}
-\title{Output Rows with Values Above Threshold}
+\title{Output Linkage Regions}
 \usage{
-get_peaks(d, t = 0, valcol = "lod")
+get_peaks(d, t = 0, valcol = "lod", annot)
 }
 \arguments{
 \item{d}{An object of class \code{\link{partbl}}, \code{link{npartbl}},
@@ -16,6 +16,8 @@ that make sense as 'position' and 'value'.}
 
 \item{valcol}{A length-one character vector giving the name of the column in
 \code{d} containing the values.}
+
+\item{annot}{A data.frame with chr, cm and bp columns.}
 }
 \value{
 A data.frame where each row contains summary information
@@ -25,7 +27,7 @@ A data.frame where each row contains summary information
 }
 \description{
 Given a data.frame \code{d} with 'position' and 'value' columns
-output those consecutive rows where 'value' > \code{t}.
+output those contiguous regions where 'value' > \code{t}.
 }
 \details{
 For objects of class \code{\link{partbl}}, \code{link{npartbl}},

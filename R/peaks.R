@@ -1,7 +1,7 @@
-#' Output Rows with Values Above Threshold
+#' Output Linkage Regions
 #'
 #' Given a data.frame \code{d} with 'position' and 'value' columns
-#' output those consecutive rows where 'value' > \code{t}.
+#' output those contiguous regions where 'value' > \code{t}.
 #'
 #' For objects of class \code{\link{partbl}}, \code{link{npartbl}},
 #' \code{link{famlod}} or \code{link{fampar}}, the main data frame
@@ -14,6 +14,7 @@
 #' @param t A length-one numeric vector specifying the threshold to be used.
 #' @param valcol A length-one character vector giving the name of the column in
 #'        \code{d} containing the values.
+#' @param annot A data.frame with chr, cm and bp columns.
 #'
 #' @return A data.frame where each row contains summary information
 #'         about contiguous regions in \code{d} where 'value' >= \code{t}.
@@ -25,7 +26,7 @@
 #' get_peaks(partbl)
 #'
 #' @export
-get_peaks <- function(d, t = 0, valcol = "lod") {
+get_peaks <- function(d, t = 0, valcol = "lod", annot) {
   if (inherits(d, "partbl")) {
     d <- d$partbl
     split_by <- c("chr")
@@ -44,6 +45,9 @@ get_peaks <- function(d, t = 0, valcol = "lod") {
   stopifnot(is.numeric(t), length(t) == 1)
   stopifnot(is.character(valcol), length(valcol) == 1)
   stopifnot(all(c(valcol, "pos") %in% names(d)))
+  stopifnot(is.data.frame(annot), nrow(annot) > 1)
+  stopifnot(all(names(annot) == c("chr", "bp", "cm")))
+
 
   # return a list of dfs where each chunk of consecutive rows has valcol >= t
   get_peaksPerChrom <- function(dchr) {
@@ -59,7 +63,8 @@ get_peaks <- function(d, t = 0, valcol = "lod") {
 
   peaks <- unlist(plyr::dlply(d, split_by, get_peaksPerChrom),
                   recursive = FALSE, use.names = FALSE)
-  summarise_peaks(peaks, valcol)
+  peaks_cm <- summarise_peaks(peaks, valcol)
+  cm2bp(peaks_cm, annot = annot)
 }
 
 

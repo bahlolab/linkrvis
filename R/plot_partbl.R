@@ -68,6 +68,6 @@ partbl2ggdata <- function(partbl, vars = c("lod", "alpha", "hlod")) {
             vars %in% c("lod", "alpha", "hlod"))
 
   partbl$partbl %>%
-    dplyr::select_( ~ (one_of(c("chr", "pos", vars)))) %>%
+    dplyr::select_( ~ (dplyr::one_of(c("chr", "pos", vars)))) %>%
     tidyr::gather_("variable", "value", vars)
 }
